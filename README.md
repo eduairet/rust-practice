@@ -6,4 +6,7 @@ Rust exercises by Eduardo Aire Torres
 
 ### Exercises from the [Rust Cookbook](https://rust-lang-nursery.github.io/rust-cookbook/print.html)
 
-
+1. [Algorithms](./algorithms/)
+   ```bash
+   cargo doc --open -p algorithms
+   ```
