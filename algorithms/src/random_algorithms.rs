@@ -1,6 +1,6 @@
 use rand::{
-    distributions::{uniform::SampleUniform, Distribution, Standard, Uniform},
-    Rng,
+    distributions::{uniform::SampleUniform, Alphanumeric, Distribution, Standard, Uniform},
+    thread_rng, Rng,
 };
 
 mod structs;
@@ -105,4 +105,32 @@ where
     let rand_tuple = rng.gen::<T>();
     let rand_point: Point = rng.gen::<Point>();
     (rand_tuple, rand_point)
+}
+
+/// Generates a random password of a given length.
+/// The password will contain alphanumeric characters.
+///
+/// # Arguments
+///
+/// * `length` - A `usize` that represents the length of the password.
+///
+/// # Returns
+///
+/// * `String` - A random password.
+///
+/// # Examples
+///
+/// ```
+/// use algorithms::generate_random_password;
+///
+/// let password = generate_random_password(10);
+/// println!("Random password: {}", password);
+/// ```
+pub fn generate_random_password(length: usize) -> String {
+    let password: String = thread_rng()
+        .sample_iter(&Alphanumeric)
+        .take(length)
+        .map(char::from)
+        .collect();
+    password
 }

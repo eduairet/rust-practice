@@ -1,5 +1,5 @@
 use algorithms::{
-    generate_random_numbers, generate_random_numbers_in_range,
+    generate_random_numbers, generate_random_numbers_in_range, generate_random_password,
     generate_random_values_from_custom_type, guess_dice_roll, Point,
 };
 
@@ -76,5 +76,11 @@ mod tests_random_algorithms {
         assert!(rand_tuple.2 >= 0.0 && rand_tuple.2 <= 1.0);
         assert!(rand_point.x >= std::i32::MIN && rand_point.x <= std::i32::MAX);
         assert!(rand_point.y >= std::i32::MIN && rand_point.y <= std::i32::MAX);
+    }
+
+    #[test]
+    fn test_generate_random_password() {
+        let password = generate_random_password(10);
+        assert_eq!(password.len(), 10);
     }
 }
