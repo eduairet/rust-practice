@@ -1,9 +1,16 @@
-workspace = { members = ["algorithms"] }
 [package]
-name = "rust-practice"
+name = "rust_practice"
 version = "0.1.0"
 edition = "2021"
+authors = ["Eduardo Aire Torres"]
+description = "Practicing Rust."
+license = "MIT"
+keywords = ["practice"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[workspace]
+members = ["algorithms"]
+
 [dependencies]
+algorithms = {path = "algorithms"}
