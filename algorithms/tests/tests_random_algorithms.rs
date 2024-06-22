@@ -4,7 +4,7 @@ use algorithms::{
 };
 
 #[cfg(test)]
-mod tests_random {
+mod tests_random_algorithms {
 
     use super::*;
 
