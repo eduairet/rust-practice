@@ -1,4 +1,4 @@
-use algorithms::generate_random_numbers;
+use algorithms::{generate_random_numbers, generate_random_numbers_in_range, guess_dice_roll};
 
 #[cfg(test)]
 mod tests_random {
@@ -32,5 +32,33 @@ mod tests_random {
     fn test_generate_random_f64() {
         let rn_f64: f64 = generate_random_numbers();
         assert!(rn_f64 >= 0.0 && rn_f64 <= 1.0);
+    }
+
+    #[test]
+    fn test_generate_random_u8_in_range() {
+        let rn_u8: u8 = generate_random_numbers_in_range(1, 100);
+        assert!(rn_u8 >= 1 && rn_u8 <= std::u8::MAX);
+    }
+
+    #[test]
+    fn test_generate_random_f64_in_range() {
+        let rn_f64: f64 = generate_random_numbers_in_range(1.0, 100.0);
+        assert!(rn_f64 >= 1.0 && rn_f64 <= 100.0);
+    }
+
+    #[test]
+    fn test_guess_dice_roll() {
+        let guess = 3;
+        let rolls = 3;
+        let message = guess_dice_roll(guess, rolls);
+        assert!(message == "You guessed correctly!" || message == "You ran out of rolls!");
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_guess_dice_roll_panic() {
+        let guess = 7;
+        let rolls = 3;
+        guess_dice_roll(guess, rolls);
     }
 }
