@@ -3,6 +3,9 @@ use rand::{
     Rng,
 };
 
+mod structs;
+pub use structs::*;
+
 /// Generates a random number of type `T`.
 ///
 /// # Examples
@@ -82,4 +85,24 @@ pub fn guess_dice_roll(guess: u8, mut rolls: u8) -> String {
         rolls -= 1;
     }
     String::from("You ran out of rolls!")
+}
+
+/// Generates random values from a custom type.
+///
+/// # Examples
+///
+/// ```
+/// use algorithms::{generate_random_values_from_custom_type, Point};
+///
+/// let (rand_tuple, rand_point) = generate_random_values_from_custom_type::<(u8, u8)>();
+/// println!("Random tuple: {:?}", rand_tuple);
+/// println!("Random point: {:?}", rand_point);
+pub fn generate_random_values_from_custom_type<T>() -> (T, Point)
+where
+    Standard: Distribution<T>,
+{
+    let mut rng = rand::thread_rng();
+    let rand_tuple = rng.gen::<T>();
+    let rand_point: Point = rng.gen::<Point>();
+    (rand_tuple, rand_point)
 }

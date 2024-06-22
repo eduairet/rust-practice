@@ -1,4 +1,7 @@
-use algorithms::{generate_random_numbers, generate_random_numbers_in_range, guess_dice_roll};
+use algorithms::{
+    generate_random_numbers, generate_random_numbers_in_range,
+    generate_random_values_from_custom_type, guess_dice_roll, Point,
+};
 
 fn main() {
     // Generate random numbers
@@ -15,4 +18,9 @@ fn main() {
     let rolls = 3;
     let message = guess_dice_roll(guess, rolls);
     println!("{}", message);
+    // Generate random values from custom type
+    type CustomType = (i32, bool, f64);
+    let (rand_tuple, rand_point): (CustomType, Point) = generate_random_values_from_custom_type();
+    println!("Random tuple: {:?}", rand_tuple);
+    println!("Random point: {:?}", rand_point);
 }

@@ -1,7 +1,11 @@
-use algorithms::{generate_random_numbers, generate_random_numbers_in_range, guess_dice_roll};
+use algorithms::{
+    generate_random_numbers, generate_random_numbers_in_range,
+    generate_random_values_from_custom_type, guess_dice_roll, Point,
+};
 
 #[cfg(test)]
 mod tests_random {
+
     use super::*;
 
     #[test]
@@ -60,5 +64,17 @@ mod tests_random {
         let guess = 7;
         let rolls = 3;
         guess_dice_roll(guess, rolls);
+    }
+
+    #[test]
+    fn test_generate_random_values_from_custom_type() {
+        type CustomType = (i32, bool, f64);
+        let (rand_tuple, rand_point): (CustomType, Point) =
+            generate_random_values_from_custom_type();
+        assert!(rand_tuple.0 >= std::i32::MIN && rand_tuple.0 <= std::i32::MAX);
+        assert!(rand_tuple.1 == true || rand_tuple.1 == false);
+        assert!(rand_tuple.2 >= 0.0 && rand_tuple.2 <= 1.0);
+        assert!(rand_point.x >= std::i32::MIN && rand_point.x <= std::i32::MAX);
+        assert!(rand_point.y >= std::i32::MIN && rand_point.y <= std::i32::MAX);
     }
 }
