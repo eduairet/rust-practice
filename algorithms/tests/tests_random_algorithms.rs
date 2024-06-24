@@ -1,6 +1,7 @@
 use algorithms::{
     generate_random_numbers, generate_random_numbers_in_range, generate_random_password,
-    generate_random_values_from_custom_type, guess_dice_roll, Point,
+    generate_random_password_with_custom_characters, generate_random_values_from_custom_type,
+    guess_dice_roll, Point,
 };
 
 #[cfg(test)]
@@ -82,5 +83,12 @@ mod tests_random_algorithms {
     fn test_generate_random_password() {
         let password = generate_random_password(10);
         assert_eq!(password.len(), 10);
+    }
+
+    #[test]
+    fn test_generate_random_password_with_custom_characters() {
+        let password = generate_random_password_with_custom_characters(10, b"abc123");
+        assert_eq!(password.len(), 10);
+        assert!(password.chars().all(|c| "abc123".contains(c)));
     }
 }

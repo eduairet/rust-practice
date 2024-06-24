@@ -134,3 +134,35 @@ pub fn generate_random_password(length: usize) -> String {
         .collect();
     password
 }
+
+/// Generates a random password of a given length with custom characters.
+/// The password will contain characters from the given charset.
+///
+/// # Arguments
+///
+/// * `length` - A `usize` that represents the length of the password.
+/// * `charset` - A slice of `u8` that represents the characters to choose from.
+///
+/// # Returns
+///
+/// * `String` - A random password.
+///
+/// # Examples
+///
+/// ```
+/// use algorithms::generate_random_password_with_custom_characters;
+///
+/// let charset = b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+/// let password = generate_random_password_with_custom_characters(10, charset);
+/// println!("Random password: {}", password);
+/// ```
+pub fn generate_random_password_with_custom_characters(length: usize, charset: &[u8]) -> String {
+    let mut rng = rand::thread_rng();
+    let password: String = (0..length)
+        .map(|_| {
+            let idx = rng.gen_range(0..charset.len());
+            charset[idx] as char
+        })
+        .collect();
+    password
+}

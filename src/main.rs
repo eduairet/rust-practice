@@ -1,6 +1,7 @@
 use algorithms::{
     generate_random_numbers, generate_random_numbers_in_range, generate_random_password,
-    generate_random_values_from_custom_type, guess_dice_roll, Point,
+    generate_random_password_with_custom_characters, generate_random_values_from_custom_type,
+    guess_dice_roll, Point,
 };
 
 fn main() {
@@ -22,4 +23,7 @@ fn main() {
     // Generate random password
     let password = generate_random_password(10);
     println!("Random password: {}", password);
+    // Generate random password with custom characters
+    let password = generate_random_password_with_custom_characters(10, b"abc123");
+    println!("Random password with custom characters: {}", password);
 }
