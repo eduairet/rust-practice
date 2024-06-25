@@ -1,8 +1,9 @@
 use algorithms::{
     generate_random_numbers, generate_random_numbers_in_range, generate_random_password,
     generate_random_password_with_custom_characters, generate_random_values_from_custom_type,
-    guess_dice_roll, Point,
+    guess_dice_roll, sort_num_vector, sort_people,
 };
+use shared::Point;
 
 fn main() {
     // Generate random numbers
@@ -26,4 +27,33 @@ fn main() {
     // Generate random password with custom characters
     let password = generate_random_password_with_custom_characters(10, b"abc123");
     println!("Random password with custom characters: {}", password);
+    // Sort a vector of numbers
+    let mut vec_i32: Vec<i32> = vec![3, 1, 2];
+    sort_num_vector(&mut vec_i32);
+    println!("{:?}", vec_i32);
+    let mut vec_f64: Vec<f64> = vec![3.0, 1.0, 2.0];
+    sort_num_vector(&mut vec_f64);
+    println!("{:?}", vec_f64);
+    // Sort a vector of people
+    let mut people = vec![
+        shared::Person::new("John".to_string(), 25),
+        shared::Person::new("Jane".to_string(), 20),
+        shared::Person::new("Alice".to_string(), 30),
+    ];
+    sort_people(&mut people, true, false);
+    println!("{:?}", people);
+    let mut people = vec![
+        shared::Person::new("Paul".to_string(), 69),
+        shared::Person::new("Emile".to_string(), 18),
+        shared::Person::new("Marie".to_string(), 25),
+    ];
+    sort_people(&mut people, false, true);
+    println!("{:?}", people);
+    let mut people = vec![
+        shared::Person::new("Emilio".to_string(), 48),
+        shared::Person::new("Álvaro".to_string(), 30),
+        shared::Person::new("Joaquín".to_string(), 25),
+    ];
+    sort_people(&mut people, true, true);
+    println!("{:?}", people);
 }

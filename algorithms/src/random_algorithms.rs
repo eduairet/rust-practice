@@ -2,9 +2,7 @@ use rand::{
     distributions::{uniform::SampleUniform, Alphanumeric, Distribution, Standard, Uniform},
     thread_rng, Rng,
 };
-
-mod structs;
-pub use structs::*;
+use shared::Point;
 
 /// Generates a random number of type `T`.
 ///
@@ -14,13 +12,13 @@ pub use structs::*;
 /// use algorithms::generate_random_numbers;
 ///
 /// let random_number: u32 = generate_random_numbers();
-/// println!("Random number: {}", random_number);
+/// println!("Random number: {}", random_number); // Random number: 123456
 /// ```
 pub fn generate_random_numbers<T>() -> T
 where
     Standard: Distribution<T>,
 {
-    let mut rng = rand::thread_rng();
+    let mut rng = thread_rng();
     rng.gen::<T>()
 }
 
@@ -32,14 +30,14 @@ where
 /// use algorithms::generate_random_numbers_in_range;
 ///
 /// let random_number: u32 = generate_random_numbers_in_range(1, 100);
-/// println!("Random number: {}", random_number);
+/// println!("Random number: {}", random_number); // Random number: 42
 /// ```
 pub fn generate_random_numbers_in_range<T>(start: T, end: T) -> T
 where
     Standard: Distribution<T>,
     T: PartialOrd + Copy + SampleUniform,
 {
-    let mut rng = rand::thread_rng();
+    let mut rng = thread_rng();
     rng.gen_range(start..end)
 }
 
@@ -62,7 +60,7 @@ where
 /// let guess = 3;
 ///
 /// let message = guess_dice_roll(guess, 3);
-/// println!("{}", message);
+/// println!("{}", message); // You guessed correctly!
 /// ```
 ///
 /// # Panics
@@ -73,7 +71,7 @@ pub fn guess_dice_roll(guess: u8, mut rolls: u8) -> String {
         panic!("Invalid guess. Please guess a number between 1 and 6.");
     }
 
-    let mut rng = rand::thread_rng();
+    let mut rng = thread_rng();
     let die = Uniform::new_inclusive(1, 6);
 
     while rolls > 0 {
@@ -92,16 +90,17 @@ pub fn guess_dice_roll(guess: u8, mut rolls: u8) -> String {
 /// # Examples
 ///
 /// ```
-/// use algorithms::{generate_random_values_from_custom_type, Point};
+/// use algorithms::{generate_random_values_from_custom_type};
+/// use shared::Point;
 ///
 /// let (rand_tuple, rand_point) = generate_random_values_from_custom_type::<(u8, u8)>();
-/// println!("Random tuple: {:?}", rand_tuple);
-/// println!("Random point: {:?}", rand_point);
+/// println!("Random tuple: {:?}", rand_tuple); // Random tuple: (123, 123)
+/// println!("Random point: {:?}", rand_point); // Random point: Point { x: 123, y: 123 }
 pub fn generate_random_values_from_custom_type<T>() -> (T, Point)
 where
     Standard: Distribution<T>,
 {
-    let mut rng = rand::thread_rng();
+    let mut rng = thread_rng();
     let rand_tuple = rng.gen::<T>();
     let rand_point: Point = rng.gen::<Point>();
     (rand_tuple, rand_point)
@@ -124,7 +123,7 @@ where
 /// use algorithms::generate_random_password;
 ///
 /// let password = generate_random_password(10);
-/// println!("Random password: {}", password);
+/// println!("Random password: {}", password); // a1b2c3d4e5
 /// ```
 pub fn generate_random_password(length: usize) -> String {
     let password: String = thread_rng()
@@ -154,10 +153,10 @@ pub fn generate_random_password(length: usize) -> String {
 ///
 /// let charset = b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 /// let password = generate_random_password_with_custom_characters(10, charset);
-/// println!("Random password: {}", password);
+/// println!("Random password: {}", password); // 1a2B3c4D5e
 /// ```
 pub fn generate_random_password_with_custom_characters(length: usize, charset: &[u8]) -> String {
-    let mut rng = rand::thread_rng();
+    let mut rng = thread_rng();
     let password: String = (0..length)
         .map(|_| {
             let idx = rng.gen_range(0..charset.len());

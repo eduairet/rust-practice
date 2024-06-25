@@ -17,3 +17,14 @@ impl Distribution<Point> for Standard {
         }
     }
 }
+
+#[derive(Debug)]
+pub struct Person {
+    pub name: String,
+    pub age: u32,
+}
+impl Person {
+    pub fn new(name: String, age: u32) -> Self {
+        Person { name, age }
+    }
+}

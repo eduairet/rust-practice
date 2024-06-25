@@ -1,8 +1,9 @@
 use algorithms::{
     generate_random_numbers, generate_random_numbers_in_range, generate_random_password,
     generate_random_password_with_custom_characters, generate_random_values_from_custom_type,
-    guess_dice_roll, Point,
+    guess_dice_roll,
 };
+use shared::Point;
 
 #[cfg(test)]
 mod tests_random_algorithms {
