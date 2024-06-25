@@ -10,8 +10,9 @@ keywords = ["practice"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [workspace]
-members = ["algorithms", "shared"]
+members = ["algorithms", "command_line", "shared"]
 
 [dependencies]
 algorithms = {path = "algorithms"}
+command_line = {path = "command_line"}
 shared = {path = "shared"}

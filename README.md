@@ -9,3 +9,4 @@ Rust exercises by Eduardo Aire Torres.
 1. [Algorithms](./algorithms/)
    1. [Random](./algorithms/src/random_algorithms.rs)
    2. [Sorting](./algorithms/src/sorting_algorithms.rs)
+2. [Command Line](./command_line/)
