@@ -5,7 +5,7 @@ mod tests_command_line {
     use super::*;
 
     #[test]
-    fn test_create_app() {
+    fn test_create_cmd() {
         let mut cmd = create_cmd();
         let m = cmd
             .try_get_matches_from_mut(["cmd", "--file", "input.txt", "--number", "3"])
