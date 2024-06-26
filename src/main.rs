@@ -3,6 +3,7 @@ use algorithms::{
     generate_random_password_with_custom_characters, generate_random_values_from_custom_type,
     guess_dice_roll, sort_num_vector, sort_people,
 };
+use command_line::create_cmd;
 use shared::Point;
 
 fn main() {
@@ -56,4 +57,16 @@ fn main() {
     ];
     sort_people(&mut people, true, true);
     println!("{:?}", people);
+    // Command line
+    let cmd = create_cmd().get_matches();
+    let file: &String = cmd.get_one("file").unwrap();
+    println!("The file passed is {}", file);
+    let num: Option<&String> = cmd.get_one("num");
+    match num {
+        None => println!("No idea what your favorite number is."),
+        Some(s) => match s.parse::<i32>() {
+            Ok(n) => println!("Your favorite number must be {}.", n + 5),
+            Err(_) => println!("That's not a number! {}", s),
+        },
+    }
 }
