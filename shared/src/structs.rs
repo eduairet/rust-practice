@@ -1,3 +1,4 @@
+use crate::Colors;
 use rand::{
     distributions::{Distribution, Standard},
     Rng,
@@ -26,5 +27,16 @@ pub struct Person {
 impl Person {
     pub fn new(name: String, age: u32) -> Self {
         Person { name, age }
+    }
+}
+
+#[derive(Debug)]
+pub struct TerminalColor {
+    pub value: Option<Colors>,
+    pub bold: bool,
+}
+impl TerminalColor {
+    pub fn new(value: Option<Colors>, bold: bool) -> Self {
+        TerminalColor { value, bold }
     }
 }

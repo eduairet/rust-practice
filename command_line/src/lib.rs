@@ -1,4 +1,6 @@
+use ansi_term::{Colour, Style};
 use clap::{Arg, ArgAction, Command};
+use shared::{Colors, TerminalColor};
 
 /// Create a command line application
 ///
@@ -33,9 +35,51 @@ pub fn create_cmd() -> Command {
             Arg::new("num")
                 .short('n')
                 .long("number")
-                .required(true)
                 .action(ArgAction::Set)
                 .help("Five less than your favorite number"),
         );
     app
+}
+
+/// Print a message to the command line with custom formatting
+///
+/// # Arguments
+///
+/// * `message` - A string slice that holds the message to print
+///
+/// * `colors` - A vector of `TerminalColor` instances that hold the color and boldness of the message
+///
+/// # Examples
+///
+/// ```
+/// use shared::{Colors, TerminalColor};
+/// use command_line::formatted_cli_message;
+///
+/// let message = "Hello, world!";
+/// let colors = vec![
+///   TerminalColor::new(Some(Colors::Red), false),
+///   TerminalColor::new(Some(Colors::Green), true),
+///   TerminalColor::new(Some(Colors::Blue), false),
+///   TerminalColor::new(None, true),
+///   TerminalColor::new(None, false),
+/// ];
+/// formatted_cli_message(message, colors);
+/// ```
+pub fn formatted_cli_message(message: &str, colors: Vec<TerminalColor>) {
+    for color in colors {
+        let color_str = match color.value {
+            Some(Colors::Red) => Colour::Red.normal(),
+            Some(Colors::Green) => Colour::Green.normal(),
+            Some(Colors::Blue) => Colour::Blue.normal(),
+            None => Style::new(),
+        };
+
+        let color_str = if color.bold {
+            color_str.bold().paint(message)
+        } else {
+            color_str.paint(message)
+        };
+
+        println!("{}", color_str);
+    }
 }

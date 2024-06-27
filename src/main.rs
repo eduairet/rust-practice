@@ -3,7 +3,7 @@ use algorithms::{
     generate_random_password_with_custom_characters, generate_random_values_from_custom_type,
     guess_dice_roll, sort_num_vector, sort_people,
 };
-use command_line::create_cmd;
+use command_line::{create_cmd, formatted_cli_message};
 use shared::Point;
 
 fn main() {
@@ -69,4 +69,11 @@ fn main() {
             Err(_) => println!("That's not a number! {}", s),
         },
     }
+    // Formatted CLI message
+    let message = "Hello, world!";
+    let colors = vec![
+        shared::TerminalColor::new(Some(shared::Colors::Red), true),
+        shared::TerminalColor::new(None, false),
+    ];
+    formatted_cli_message(message, colors);
 }
