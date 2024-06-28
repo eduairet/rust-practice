@@ -5,10 +5,10 @@ use algorithms::{
 };
 use command_line::{create_cmd, formatted_cli_message};
 use compression::{compress_file, decompress_file, decompress_removing_prefix};
-use shared::Point;
+use shared::{Colors, Person, Point, TerminalColor};
 use std::{
+    env,
     fs::{remove_dir_all, remove_file},
-    path::Path,
 };
 
 fn main() {
@@ -42,23 +42,23 @@ fn main() {
     println!("{:?}", vec_f64);
     // Sort a vector of people
     let mut people = vec![
-        shared::Person::new("John".to_string(), 25),
-        shared::Person::new("Jane".to_string(), 20),
-        shared::Person::new("Alice".to_string(), 30),
+        Person::new("John".to_string(), 25),
+        Person::new("Jane".to_string(), 20),
+        Person::new("Alice".to_string(), 30),
     ];
     sort_people(&mut people, true, false);
     println!("{:?}", people);
     let mut people = vec![
-        shared::Person::new("Paul".to_string(), 69),
-        shared::Person::new("Emile".to_string(), 18),
-        shared::Person::new("Marie".to_string(), 25),
+        Person::new("Paul".to_string(), 69),
+        Person::new("Emile".to_string(), 18),
+        Person::new("Marie".to_string(), 25),
     ];
     sort_people(&mut people, false, true);
     println!("{:?}", people);
     let mut people = vec![
-        shared::Person::new("Emilio".to_string(), 48),
-        shared::Person::new("Álvaro".to_string(), 30),
-        shared::Person::new("Joaquín".to_string(), 25),
+        Person::new("Emilio".to_string(), 48),
+        Person::new("Álvaro".to_string(), 30),
+        Person::new("Joaquín".to_string(), 25),
     ];
     sort_people(&mut people, true, true);
     println!("{:?}", people);
@@ -77,38 +77,34 @@ fn main() {
     // Formatted CLI message
     let message = "Hello, world!";
     let colors = vec![
-        shared::TerminalColor::new(Some(shared::Colors::Red), true),
-        shared::TerminalColor::new(None, false),
+        TerminalColor::new(Some(Colors::Red), true),
+        TerminalColor::new(None, false),
     ];
     formatted_cli_message(message, colors);
     // Compression
-    let parent_dir = "parent_dir";
-    let logs_dir = "logs";
-    let logs_path = Path::new(parent_dir).join(logs_dir);
-    let dirs: Vec<&str> = vec![logs_path.to_str().unwrap()];
-    let file = "test.tar.gz";
-    let output_dir = "test_output";
-    compress_file(&file, dirs.clone()).unwrap();
-    println!("Compressed file created: {:?}", Path::new(&file).exists());
-    decompress_file(&file, &output_dir).unwrap();
+    let tar_file = "test.tar.gz";
+    let copy_path = "backup/logs";
+    let copy_pat_src = "/var/log";
+    let output_dir = "output_dir";
+    compress_file(tar_file, copy_path, copy_pat_src).unwrap();
     println!(
-        "Decompressed file created: {:?}",
-        Path::new(&output_dir).exists()
+        "Compressed file created. {}/{}\n",
+        env::current_dir().unwrap().display(),
+        tar_file
     );
-    compress_file(&file, dirs).unwrap();
-    println!("Compressed file created: {:?}", Path::new(&file).exists());
-    decompress_removing_prefix(&file, &output_dir).unwrap();
+    decompress_file(tar_file, output_dir).unwrap();
     println!(
-        "Decompressed file created: {:?}",
-        Path::new(&parent_dir).exists()
+        "Decompressed file created. {}/{}\n",
+        env::current_dir().unwrap().display(),
+        output_dir
     );
     remove_dir_all(output_dir).unwrap();
-    remove_dir_all(parent_dir).unwrap();
-    remove_file(file).unwrap();
+    decompress_removing_prefix(tar_file, copy_path, output_dir).unwrap();
     println!(
-        "Files removed: {:?} {:?} {:?}",
-        !Path::new(&output_dir).exists(),
-        !Path::new(&parent_dir).exists(),
-        !Path::new(&file).exists()
+        "Decompressed file with prefix created. {}/{}\n",
+        env::current_dir().unwrap().display(),
+        output_dir
     );
+    remove_dir_all(output_dir).unwrap();
+    remove_file(tar_file).unwrap();
 }

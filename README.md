@@ -11,3 +11,4 @@ Rust exercises by Eduardo Aire Torres.
    2. [Sorting](./algorithms/src/sorting_algorithms.rs)
 2. [Command Line](./command_line/)
 3. [Compression](./compression/)
+4. [Concurrency](./concurrency/)
