@@ -5,6 +5,7 @@ use algorithms::{
 };
 use command_line::{create_cmd, formatted_cli_message};
 use shared::Point;
+use std::path::Path;
 
 fn main() {
     // Generate random numbers
@@ -76,4 +77,7 @@ fn main() {
         shared::TerminalColor::new(None, false),
     ];
     formatted_cli_message(message, colors);
+    // Compression
+    let root = Path::new(".").parent();
+    print!("Root: {:?}", root);
 }
