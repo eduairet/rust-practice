@@ -4,8 +4,12 @@ use algorithms::{
     guess_dice_roll, sort_num_vector, sort_people,
 };
 use command_line::{create_cmd, formatted_cli_message};
+use compression::{compress_file, decompress_file, decompress_removing_prefix};
 use shared::Point;
-use std::path::Path;
+use std::{
+    fs::{remove_dir_all, remove_file},
+    path::Path,
+};
 
 fn main() {
     // Generate random numbers
@@ -78,6 +82,33 @@ fn main() {
     ];
     formatted_cli_message(message, colors);
     // Compression
-    let root = Path::new(".").parent();
-    print!("Root: {:?}", root);
+    let parent_dir = "parent_dir";
+    let logs_dir = "logs";
+    let logs_path = Path::new(parent_dir).join(logs_dir);
+    let dirs: Vec<&str> = vec![logs_path.to_str().unwrap()];
+    let file = "test.tar.gz";
+    let output_dir = "test_output";
+    compress_file(&file, dirs.clone()).unwrap();
+    println!("Compressed file created: {:?}", Path::new(&file).exists());
+    decompress_file(&file, &output_dir).unwrap();
+    println!(
+        "Decompressed file created: {:?}",
+        Path::new(&output_dir).exists()
+    );
+    compress_file(&file, dirs).unwrap();
+    println!("Compressed file created: {:?}", Path::new(&file).exists());
+    decompress_removing_prefix(&file, &output_dir).unwrap();
+    println!(
+        "Decompressed file created: {:?}",
+        Path::new(&parent_dir).exists()
+    );
+    remove_dir_all(output_dir).unwrap();
+    remove_dir_all(parent_dir).unwrap();
+    remove_file(file).unwrap();
+    println!(
+        "Files removed: {:?} {:?} {:?}",
+        !Path::new(&output_dir).exists(),
+        !Path::new(&parent_dir).exists(),
+        !Path::new(&file).exists()
+    );
 }

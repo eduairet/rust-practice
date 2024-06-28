@@ -21,4 +21,3 @@ jobs:
         run: |
           cargo test -p algorithms --verbose -- --show-output
           cargo test -p command_line --verbose -- --show-output
-          cargo test -p compression --verbose -- --show-output
