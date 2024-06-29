@@ -12,3 +12,4 @@ Rust exercises by Eduardo Aire Torres.
 2. [Command Line](./command_line/)
 3. [Compression](./compression/)
 4. [Concurrency](./concurrency/)
+   1. [Explicit Threads](./concurrency/src/explicit_threads.rs)
