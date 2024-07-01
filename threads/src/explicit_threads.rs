@@ -1,4 +1,6 @@
 use crossbeam::scope;
+use crossbeam_channel::bounded;
+use std::{thread, time::Duration};
 
 /// Find the maximum value in an array
 ///
@@ -39,4 +41,49 @@ pub fn find_max(arr: &[i32], threshold: usize) -> Option<i32> {
         Some(max_l.max(max_r))
     })
     .unwrap()
+}
+
+/// Parallel pipeline, where a source sends messages to a worker, which processes them and sends them to a sink.
+///
+/// # Arguments
+///
+/// * `num_messages` - A usize value that holds the number of messages to be sent by the source
+/// * `num_workers` - A usize value that holds the number of workers
+///
+/// # Examples
+///
+/// ```
+/// use threads::parallel_pipeline;
+/// parallel_pipeline(10, 2);
+/// ```
+pub fn parallel_pipeline(num_messages: usize, num_workers: usize) {
+    let (sender1, receiver1) = bounded(1);
+    let (sender2, receiver2) = bounded(1);
+
+    scope(|s| {
+        s.spawn(|_| {
+            for i in 0..num_messages {
+                sender1.send(i).unwrap();
+                println!("Source sent: {}", i);
+            }
+            drop(sender1);
+        });
+
+        for _ in 0..num_workers {
+            let (sender, receiver) = (sender2.clone(), receiver1.clone());
+            s.spawn(move |_| {
+                thread::sleep(Duration::from_millis(500));
+                for message in receiver.iter() {
+                    println!("Worker {:?} received {}.", thread::current().id(), message);
+                    sender.send(message * 2).unwrap();
+                }
+            });
+        }
+
+        drop(sender2);
+        for message in receiver2.iter() {
+            println!("Sink received: {}", message);
+        }
+    })
+    .unwrap();
 }
