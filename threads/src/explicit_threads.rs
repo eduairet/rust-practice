@@ -1,5 +1,5 @@
 use crossbeam::scope;
-use crossbeam_channel::bounded;
+use crossbeam_channel::{bounded, unbounded};
 use std::{thread, time::Duration};
 
 /// Find the maximum value in an array
@@ -86,4 +86,39 @@ pub fn parallel_pipeline(num_messages: usize, num_workers: usize) {
         }
     })
     .unwrap();
+}
+
+/// Pass data between two threads
+///
+/// # Arguments
+///
+/// * `num_messages` - A usize value that holds the number of messages to be sent
+///
+/// # Returns
+///
+/// * A tuple containing the first element as an empty tuple and the second element as a crossbeam_channel::Receiver<usize>
+///
+/// # Examples
+///
+/// ```
+/// use threads::pass_data_between_two_threads;
+/// let (_, receiver) = pass_data_between_two_threads(10);
+/// ```
+pub fn pass_data_between_two_threads(
+    num_messages: usize,
+) -> ((), crossbeam_channel::Receiver<usize>) {
+    let (sender, receiver) = unbounded();
+
+    (
+        scope(|s| {
+            s.spawn(|_| {
+                for i in 0..num_messages {
+                    sender.send(i).unwrap();
+                    thread::sleep(Duration::from_millis(100));
+                }
+            });
+        })
+        .unwrap(),
+        receiver,
+    )
 }

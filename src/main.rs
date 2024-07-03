@@ -10,6 +10,7 @@ use std::{
     env,
     fs::{remove_dir_all, remove_file},
 };
+use threads::{find_max, parallel_pipeline, pass_data_between_two_threads};
 
 fn main() {
     // Generate random numbers
@@ -107,4 +108,14 @@ fn main() {
     );
     remove_dir_all(output_dir).unwrap();
     remove_file(tar_file).unwrap();
+    // Threads
+    let arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+    let threshold = 5;
+    println!("Max value: {:?}", find_max(&arr, threshold));
+    parallel_pipeline(10, 2);
+    let num_messages = 3;
+    let (.., receiver) = pass_data_between_two_threads(num_messages);
+    for _ in 0..num_messages {
+        println!("Received: {}", receiver.recv().unwrap());
+    }
 }
