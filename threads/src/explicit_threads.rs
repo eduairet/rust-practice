@@ -1,6 +1,7 @@
 use crossbeam::scope;
 use crossbeam_channel::{bounded, unbounded};
-use std::{thread, time::Duration};
+use lazy_static::lazy_static;
+use std::{error::Error, sync::Mutex, thread, time::Duration};
 
 /// Find the maximum value in an array
 ///
@@ -121,4 +122,58 @@ pub fn pass_data_between_two_threads(
         .unwrap(),
         receiver,
     )
+}
+
+/// Create a global state
+///
+/// # Examples
+///
+/// ```
+/// use threads::create_global_state;
+///
+/// let global_state = create_global_state();
+///
+/// {
+///     let global_state = global_state.lock().unwrap();
+///     assert_eq!(global_state.len(), 0);
+/// }
+/// ```
+pub fn create_global_state() -> &'static Mutex<Vec<String>> {
+    lazy_static! {
+        static ref GLOBAL_STATE: Mutex<Vec<String>> = Mutex::new(Vec::new());
+    }
+
+    &GLOBAL_STATE
+}
+
+/// Insert a token into the global state
+///
+/// # Arguments
+///
+/// * `token` - A string slice that holds the token to be inserted
+/// * `state` - A reference to a Mutex<Vec<String>> that holds the global state
+///
+/// # Returns
+///
+/// * A Result<(), Box<dyn Error>> where the error is a string slice
+///
+/// # Examples
+///
+/// ```
+/// use threads::{global_state_insert, create_global_state};
+///
+/// let global_state = create_global_state();
+/// global_state_insert("BTC", global_state).unwrap();
+/// global_state_insert("ETH", global_state).unwrap();
+/// {
+///    let global_state = global_state.lock().unwrap();
+///    assert_eq!(global_state.len(), 2);
+/// }
+pub fn global_state_insert(
+    token: &str,
+    state: &'static Mutex<Vec<String>>,
+) -> Result<(), Box<dyn Error>> {
+    let mut global_state = state.lock().map_err(|_| "Failed to acquire MutexGuard")?;
+    global_state.push(token.to_string());
+    Ok(())
 }

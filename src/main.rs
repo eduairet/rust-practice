@@ -1,24 +1,12 @@
-use algorithms::{
-    generate_random_numbers, generate_random_numbers_in_range, generate_random_password,
-    generate_random_password_with_custom_characters, generate_random_values_from_custom_type,
-    guess_dice_roll, sort_num_vector, sort_people,
-};
-use command_line::{create_cmd, formatted_cli_message};
-use compression::{compress_file, decompress_file, decompress_removing_prefix};
-use lazy_static::lazy_static;
-use shared::{Colors, Person, Point, TerminalColor};
+use algorithms::*;
+use command_line::*;
+use compression::*;
+use shared::*;
 use std::{
     env,
-    error::Error,
     fs::{remove_dir_all, remove_file},
-    sync::Mutex,
 };
-use threads::{find_max, parallel_pipeline, pass_data_between_two_threads};
-
-// Global state
-lazy_static! {
-    static ref CRYPTOS: Mutex<Vec<String>> = Mutex::new(Vec::new());
-}
+use threads::*;
 
 fn main() {
     // Generate random numbers
@@ -127,16 +115,11 @@ fn main() {
         println!("Received: {}", receiver.recv().unwrap());
     }
     // Global state
-    insert("BTC").unwrap();
-    insert("ETH").unwrap();
+    let global_state = create_global_state();
+    global_state_insert("BTC", global_state).unwrap();
+    global_state_insert("ETH", global_state).unwrap();
     {
-        let global_state = CRYPTOS.lock().unwrap();
-        println!("Cryptos: {:?}", *global_state);
+        let global_state = global_state.lock().unwrap();
+        println!("Cryptos: {:?}", global_state);
     }
-}
-
-fn insert(token: &str) -> Result<(), Box<dyn Error>> {
-    let mut db = CRYPTOS.lock().map_err(|_| "Failed to acquire MutexGuard")?;
-    db.push(token.to_string());
-    Ok(())
 }
