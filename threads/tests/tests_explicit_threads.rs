@@ -1,3 +1,5 @@
+use lazy_static::lazy_static;
+use std::{error::Error, sync::Mutex};
 use threads::{find_max, parallel_pipeline, pass_data_between_two_threads};
 
 #[cfg(test)]
@@ -23,5 +25,24 @@ mod tests_explicit_threads {
         for i in 0..num_messages {
             assert_eq!(i, receiver.recv().unwrap());
         }
+    }
+
+    #[test]
+    fn test_maintain_global_state() {
+        lazy_static! {
+            static ref CRYPTOS: Mutex<Vec<String>> = Mutex::new(Vec::new());
+        }
+
+        fn insert(token: &str) -> Result<(), Box<dyn Error>> {
+            let mut db = CRYPTOS.lock().map_err(|_| "Failed to acquire MutexGuard")?;
+            db.push(token.to_string());
+            Ok(())
+        }
+
+        insert("BTC").unwrap();
+        insert("ETH").unwrap();
+
+        let db = CRYPTOS.lock().unwrap();
+        assert_eq!(db.len(), 2);
     }
 }
