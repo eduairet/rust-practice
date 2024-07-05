@@ -1,7 +1,10 @@
+use dirs::home_dir;
+use std::fs::{remove_file, File};
 use threads::*;
 
 #[cfg(test)]
 mod tests_explicit_threads {
+
     use super::*;
 
     #[test]
@@ -34,5 +37,16 @@ mod tests_explicit_threads {
             let global_state = global_state.lock().unwrap();
             assert_eq!(global_state.len(), 2);
         }
+    }
+
+    #[test]
+    fn test_calculate_sha256_sum_of_iso_files() {
+        let home_dir = home_dir().unwrap();
+        let file_out = home_dir.join("Downloads/test.iso");
+        File::create(&file_out).expect("Failed to create .iso file");
+
+        let rx = calculate_sha256_sum_of_iso_files().unwrap();
+        assert!(rx.into_iter().count() > 0);
+        remove_file(file_out).expect("Failed to remove .iso file");
     }
 }

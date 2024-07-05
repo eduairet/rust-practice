@@ -16,6 +16,7 @@ members = ["algorithms", "command_line", "compression", "shared", "threads"]
 algorithms = {path = "algorithms"}
 command_line = {path = "command_line"}
 compression = {path = "compression"}
+dirs = "5.0.1"
 lazy_static = "1.5.0"
 shared = {path = "shared"}
 threads = {path = "threads"}

@@ -1,12 +1,18 @@
 use crossbeam::scope;
 use crossbeam_channel::{bounded, unbounded};
+use dirs::home_dir;
 use lazy_static::lazy_static;
 use num_cpus;
+use ring::digest::Digest;
 use shared::{compute_digest, is_iso};
 use std::{
     error::Error,
-    io::Error as IoError,
-    sync::{mpsc::channel, Mutex},
+    io::{Error as IoError, ErrorKind},
+    path::PathBuf,
+    sync::{
+        mpsc::{channel, Receiver},
+        Mutex,
+    },
     thread,
     time::Duration,
 };
@@ -192,7 +198,7 @@ pub fn global_state_insert(
 ///
 /// # Returns
 ///
-/// * A Result<(), IoError> where the error is an IoError
+/// * A Result<crossbeam_channel::Receiver<Result<(Digest, PathBuf), IoError>>, IoError> which holds the receiver
 ///
 /// # Examples
 ///
@@ -200,12 +206,19 @@ pub fn global_state_insert(
 /// use threads::calculate_sha256_sum_of_iso_files;
 /// calculate_sha256_sum_of_iso_files().unwrap();
 /// ```
-pub fn calculate_sha256_sum_of_iso_files() -> Result<(), IoError> {
+pub fn calculate_sha256_sum_of_iso_files(
+) -> Result<Receiver<Result<(Digest, PathBuf), IoError>>, IoError> {
     let pool = ThreadPool::new(num_cpus::get());
 
     let (tx, rx) = channel();
 
-    for entry in WalkDir::new("~/Downloads")
+    let home_dir = home_dir().ok_or(IoError::new(
+        ErrorKind::NotFound,
+        "Home directory not found",
+    ))?;
+    let download_dir = home_dir.join("Downloads");
+
+    for entry in WalkDir::new(download_dir)
         .follow_links(true)
         .into_iter()
         .filter_map(|e| e.ok())
@@ -220,9 +233,5 @@ pub fn calculate_sha256_sum_of_iso_files() -> Result<(), IoError> {
     }
 
     drop(tx);
-    for t in rx.iter() {
-        let (sha, path) = t?;
-        println!("{:?} {:?}", sha, path);
-    }
-    Ok(())
+    Ok(rx)
 }

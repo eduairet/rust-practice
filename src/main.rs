@@ -1,10 +1,11 @@
 use algorithms::*;
 use command_line::*;
 use compression::*;
+use dirs::home_dir;
 use shared::*;
 use std::{
     env,
-    fs::{remove_dir_all, remove_file},
+    fs::{remove_dir_all, remove_file, File},
 };
 use threads::*;
 
@@ -123,5 +124,13 @@ fn main() {
         println!("Cryptos: {:?}", global_state);
     }
     // Calculate digest
-    calculate_sha256_sum_of_iso_files().unwrap();
+    let home_dir = home_dir().unwrap();
+    let file_out = home_dir.join("Downloads/test.iso");
+    File::create(&file_out).expect("Failed to create .iso file");
+    let rx = calculate_sha256_sum_of_iso_files().unwrap();
+    for t in rx.iter() {
+        let (sha, path) = t.unwrap();
+        println!("{:?} {:?}", sha, path);
+    }
+    remove_file(file_out).expect("Failed to remove .iso file");
 }
