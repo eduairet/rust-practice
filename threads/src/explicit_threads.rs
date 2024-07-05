@@ -1,7 +1,17 @@
 use crossbeam::scope;
 use crossbeam_channel::{bounded, unbounded};
 use lazy_static::lazy_static;
-use std::{error::Error, sync::Mutex, thread, time::Duration};
+use num_cpus;
+use shared::{compute_digest, is_iso};
+use std::{
+    error::Error,
+    io::Error as IoError,
+    sync::{mpsc::channel, Mutex},
+    thread,
+    time::Duration,
+};
+use threadpool::ThreadPool;
+use walkdir::WalkDir;
 
 /// Find the maximum value in an array
 ///
@@ -175,5 +185,44 @@ pub fn global_state_insert(
 ) -> Result<(), Box<dyn Error>> {
     let mut global_state = state.lock().map_err(|_| "Failed to acquire MutexGuard")?;
     global_state.push(token.to_string());
+    Ok(())
+}
+
+/// Calculate the SHA256 sum of ISO files
+///
+/// # Returns
+///
+/// * A Result<(), IoError> where the error is an IoError
+///
+/// # Examples
+///
+/// ```
+/// use threads::calculate_sha256_sum_of_iso_files;
+/// calculate_sha256_sum_of_iso_files().unwrap();
+/// ```
+pub fn calculate_sha256_sum_of_iso_files() -> Result<(), IoError> {
+    let pool = ThreadPool::new(num_cpus::get());
+
+    let (tx, rx) = channel();
+
+    for entry in WalkDir::new("~/Downloads")
+        .follow_links(true)
+        .into_iter()
+        .filter_map(|e| e.ok())
+        .filter(|e| !e.path().is_dir() && is_iso(e.path()))
+    {
+        let path = entry.path().to_owned();
+        let tx = tx.clone();
+        pool.execute(move || {
+            let digest = compute_digest(path);
+            tx.send(digest).expect("Could not send data!");
+        });
+    }
+
+    drop(tx);
+    for t in rx.iter() {
+        let (sha, path) = t?;
+        println!("{:?} {:?}", sha, path);
+    }
     Ok(())
 }

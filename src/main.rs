@@ -122,4 +122,6 @@ fn main() {
         let global_state = global_state.lock().unwrap();
         println!("Cryptos: {:?}", global_state);
     }
+    // Calculate digest
+    calculate_sha256_sum_of_iso_files().unwrap();
 }
