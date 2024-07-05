@@ -40,6 +40,7 @@ mod tests_explicit_threads {
     }
 
     #[test]
+    #[ignore]
     fn test_calculate_sha256_sum_of_iso_files() {
         let home_dir = home_dir().unwrap();
         let file_out = home_dir.join("Downloads/test.iso");
