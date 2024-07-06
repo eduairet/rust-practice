@@ -1,10 +1,12 @@
 use crossbeam::scope;
 use crossbeam_channel::{bounded, unbounded};
 use dirs::home_dir;
+use image::ImageBuffer;
 use lazy_static::lazy_static;
+use num::complex::Complex;
 use num_cpus;
 use ring::digest::Digest;
-use shared::{compute_digest, is_iso};
+use shared::{compute_digest, is_iso, julia, wavelength_to_rgb};
 use std::{
     error::Error,
     io::{Error as IoError, ErrorKind},
@@ -234,4 +236,57 @@ pub fn calculate_sha256_sum_of_iso_files(
 
     drop(tx);
     Ok(rx)
+}
+
+/// Draw a fractal image
+///
+/// # Arguments
+///
+/// * `width` - A u32 value that holds the width of the image
+/// * `height` - A u32 value that holds the height of the image
+/// * `iterations` - A u32 value that holds the number of iterations
+/// * `output_file` - A string slice that holds the name of the output file
+///
+/// # Returns
+///
+/// * A Result<(), Box<dyn Error>> where the error is a string slice
+///
+/// # Examples
+///
+/// ``` ignore
+/// use threads::draw_fractal;
+/// let output_file = "fractal.png";
+/// let result = draw_fractal(1024, 1024, 300, output_file);
+/// assert!(result.is_ok(), "Failed to draw fractal: {:?}", result.err());
+/// ```
+pub fn draw_fractal(
+    width: u32,
+    height: u32,
+    iterations: u32,
+    output_file: &str,
+) -> Result<(), Box<dyn Error>> {
+    let mut img = ImageBuffer::new(width, height);
+
+    let c = Complex::new(-0.8, 0.156);
+
+    let pool = ThreadPool::new(num_cpus::get());
+    let (tx, rx) = channel();
+
+    for y in 0..height {
+        let tx = tx.clone();
+        pool.execute(move || {
+            for x in 0..width {
+                let i = julia(c, x, y, width, height, iterations);
+                let pixel = wavelength_to_rgb(380 + i * 400 / iterations);
+                tx.send((x, y, pixel)).expect("Could not send data!");
+            }
+        });
+    }
+
+    for _ in 0..(width * height) {
+        let (x, y, pixel) = rx.recv()?;
+        img.put_pixel(x, y, pixel);
+    }
+    let _ = img.save(output_file)?;
+    Ok(())
 }

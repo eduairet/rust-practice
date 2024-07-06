@@ -133,4 +133,12 @@ fn main() {
         println!("{:?} {:?}", sha, path);
     }
     remove_file(file_out).expect("Failed to remove .iso file");
+    // Draw fractal
+    let output_file = "fractal.png";
+    draw_fractal(1024, 1024, 300, output_file).unwrap();
+    println!(
+        "Fractal image created. {}/{}",
+        env::current_dir().unwrap().display(),
+        output_file
+    );
 }

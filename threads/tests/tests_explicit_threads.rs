@@ -50,4 +50,15 @@ mod tests_explicit_threads {
         assert!(rx.into_iter().count() > 0);
         remove_file(file_out).expect("Failed to remove .iso file");
     }
+
+    #[test]
+    #[ignore]
+    fn test_draw_fractal() {
+        let output_file = "fractal.png";
+        let result = draw_fractal(1024, 1024, 300, output_file);
+        assert!(result.is_ok(), "Failed to draw fractal: {:?}", result.err());
+        if result.is_ok() {
+            std::fs::remove_file(output_file).expect("Failed to delete output image");
+        }
+    }
 }
