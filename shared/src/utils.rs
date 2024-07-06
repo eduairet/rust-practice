@@ -64,19 +64,25 @@ pub fn is_iso(path: &Path) -> bool {
     path.extension().map_or(false, |ext| ext == "iso")
 }
 
-/// Calculate the SHA256 sum of ISO files
+/// Maps wavelength to RGB values
+///
+/// # Arguments
+///
+/// * `wavelength` - A u32 value
 ///
 /// # Returns
 ///
-/// * A Result<crossbeam_channel::Receiver<Result<(Digest, PathBuf), IoError>>, IoError> which holds the receiver
+/// * An Rgb<u8> value
 ///
 /// # Examples
 ///
 /// ```
-/// use shared::calculate_sha256_sum_of_iso_files;
+/// use shared::wavelength_to_rgb;
+/// use image::Rgb;
 ///
-/// let rx = calculate_sha256_sum_of_iso_files().unwrap();
-/// assert!(rx.into_iter().count() > 0);
+/// let wavelength = 500;
+/// let rgb = wavelength_to_rgb(wavelength);
+/// println!("{:?}", rgb);
 /// ```
 pub fn wavelength_to_rgb(wavelength: u32) -> Rgb<u8> {
     let wave = wavelength as f32;
