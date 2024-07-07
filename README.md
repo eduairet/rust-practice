@@ -11,7 +11,7 @@ Rust exercises by Eduardo Aire Torres.
 3. [Compression](./compression/)
 4. [Concurrency](./threads/)
    1. [Explicit Threads](./threads/src/explicit_threads.rs)
-   2. [Parallel Tasks](./threads/src/parallel_tasks)
+   2. [Parallel Tasks](./threads/src/parallel_tasks.rs)
 
 ### References
 - Exercises from the [Rust Cookbook](https://rust-lang-nursery.github.io/rust-cookbook)
