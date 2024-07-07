@@ -12,5 +12,5 @@ Rust exercises by Eduardo Aire Torres.
 4. [Concurrency](./concurrency/)
    1. [Explicit Threads](./concurrency/src/explicit_threads.rs)
 
-### Notes
+### References
 - Exercises from the [Rust Cookbook](https://rust-lang-nursery.github.io/rust-cookbook)

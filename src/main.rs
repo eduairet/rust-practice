@@ -141,4 +141,8 @@ fn main() {
         env::current_dir().unwrap().display(),
         output_file
     );
+    // Parallel tasks
+    let mut array = [1, 2, 3, 4, 5];
+    let result = mutate_array_in_parallel(&mut array, 1);
+    println!("{:?}", result);
 }
