@@ -9,8 +9,9 @@ Rust exercises by Eduardo Aire Torres.
    2. [Sorting](./algorithms/src/sorting_algorithms.rs)
 2. [Command Line](./command_line/)
 3. [Compression](./compression/)
-4. [Concurrency](./concurrency/)
-   1. [Explicit Threads](./concurrency/src/explicit_threads.rs)
+4. [Concurrency](./threads/)
+   1. [Explicit Threads](./threads/src/explicit_threads.rs)
+   2. [Parallel Tasks](./concurrency/src/parallel_tasks)
 
 ### References
 - Exercises from the [Rust Cookbook](https://rust-lang-nursery.github.io/rust-cookbook)
