@@ -141,8 +141,14 @@ fn main() {
         env::current_dir().unwrap().display(),
         output_file
     );
-    // Parallel tasks
+    // Mutate array in parallel
     let mut array = [1, 2, 3, 4, 5];
     let result = mutate_array_in_parallel(&mut array, 1);
     println!("{:?}", result);
+    // Match predicate in parallel
+    let array = [2, 4, 6, 8, 10];
+    let predicate = |x| x % 2 == 0;
+    let is_all = true;
+    let result = match_predicate_in_parallel(&array, is_all, predicate);
+    assert_eq!(result, true);
 }
