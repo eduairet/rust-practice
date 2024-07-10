@@ -1,4 +1,5 @@
 use rayon::prelude::*;
+use shared::Person;
 use std::marker::Sync;
 
 /// Mutate an array in parallel
@@ -92,4 +93,48 @@ pub fn match_predicate_in_parallel(
 pub fn sort_string_vector_in_parallel(vector: &mut Vec<String>) -> Vec<String> {
     vector.par_sort_unstable();
     vector.to_vec()
+}
+
+/// Map and reduce the age of people in parallel
+///
+/// # Arguments
+///
+/// * `array` - A slice of Person values
+/// * `condition` - A closure that takes an u32 value and returns a boolean value
+///
+/// # Returns
+///
+/// An i32 value
+///
+/// # Example
+///
+/// ```
+/// use threads::map_reduce_person_age_in_parallel;
+/// use shared::Person;
+/// use rayon::prelude::*;
+///
+/// let vec = [
+///    Person {
+///       name: "John".to_string(),
+///       age: 25,
+///    },
+///    Person {
+///       name: "Jane".to_string(),
+///       age: 20,
+///    },
+/// ];
+///
+/// let condition = |x| x > 20;
+/// let result = map_reduce_person_age_in_parallel(&vec, condition);
+/// println!("{}", result);
+/// ```
+pub fn map_reduce_person_age_in_parallel(
+    array: &[Person],
+    condition: impl Fn(u32) -> bool + Sync,
+) -> i32 {
+    let filtered_array: Vec<&Person> = array.par_iter().filter(|p| condition(p.age)).collect();
+    filtered_array
+        .par_iter()
+        .map(|p| p.age as i32)
+        .reduce(|| 0, |acc, x| acc + x)
 }

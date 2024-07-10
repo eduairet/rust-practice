@@ -1,3 +1,4 @@
+use shared::Person;
 use threads::*;
 
 #[cfg(test)]
@@ -70,5 +71,33 @@ mod tests_explicit_threads {
             vector,
             vec!["a".to_string(), "b".to_string(), "c".to_string()]
         );
+    }
+
+    #[test]
+    fn test_map_reduce_person_age_in_parallel() {
+        let vec = [
+            Person {
+                name: "Alice".to_string(),
+                age: 23,
+            },
+            Person {
+                name: "Bob".to_string(),
+                age: 25,
+            },
+            Person {
+                name: "Charlie".to_string(),
+                age: 27,
+            },
+            Person {
+                name: "David".to_string(),
+                age: 29,
+            },
+            Person {
+                name: "Eve".to_string(),
+                age: 31,
+            },
+        ];
+        let age_sum = map_reduce_person_age_in_parallel(&vec, |age| age > 25);
+        assert_eq!(age_sum, 87);
     }
 }
