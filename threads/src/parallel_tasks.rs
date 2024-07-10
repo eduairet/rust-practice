@@ -62,3 +62,34 @@ pub fn match_predicate_in_parallel(
         array.par_iter().any(|&x| predicate(x))
     }
 }
+
+/// Sort a vector of strings in parallel
+///
+/// # Arguments
+///
+/// * `vector` - A mutable vector of strings
+///
+/// # Returns
+///
+/// A vector of strings
+///
+/// # Example
+///
+/// ```
+/// use threads::sort_string_vector_in_parallel;
+/// use rand::{distributions::Alphanumeric, thread_rng, Rng};
+/// use rayon::prelude::*;
+///
+/// let mut vec = vec![String::new(); 10];
+/// vec.par_iter_mut().for_each(|p| {
+///    let mut rng = thread_rng();
+///    *p = (0..3).map(|_| rng.sample(Alphanumeric) as char).collect()
+/// });
+/// println!("{:?}", vec);
+/// let sorted_parallel = sort_string_vector_in_parallel(&mut vec);
+/// println!("{:?}", sorted_parallel);
+/// ```
+pub fn sort_string_vector_in_parallel(vector: &mut Vec<String>) -> Vec<String> {
+    vector.par_sort_unstable();
+    vector.to_vec()
+}

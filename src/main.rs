@@ -2,6 +2,8 @@ use algorithms::*;
 use command_line::*;
 use compression::*;
 use dirs::home_dir;
+use rand::{distributions::Alphanumeric, thread_rng, Rng};
+use rayon::prelude::*;
 use shared::*;
 use std::{
     env,
@@ -150,5 +152,14 @@ fn main() {
     let predicate = |x| x % 2 == 0;
     let is_all = true;
     let result = match_predicate_in_parallel(&array, is_all, predicate);
-    assert_eq!(result, true);
+    println!("{}", result);
+    // Sort a vector of people in parallel
+    let mut vec = vec![String::new(); 10];
+    vec.par_iter_mut().for_each(|p| {
+        let mut rng = thread_rng();
+        *p = (0..3).map(|_| rng.sample(Alphanumeric) as char).collect()
+    });
+    println!("{:?}", vec);
+    let sorted_parallel = sort_string_vector_in_parallel(&mut vec);
+    println!("{:?}", sorted_parallel);
 }

@@ -61,4 +61,14 @@ mod tests_explicit_threads {
         let result = match_predicate_in_parallel(&array, is_all, predicate);
         assert_eq!(result, true);
     }
+
+    #[test]
+    fn test_sort_string_vector_in_parallel() {
+        let mut vector = vec!["c".to_string(), "a".to_string(), "b".to_string()];
+        sort_string_vector_in_parallel(&mut vector);
+        assert_eq!(
+            vector,
+            vec!["a".to_string(), "b".to_string(), "c".to_string()]
+        );
+    }
 }
