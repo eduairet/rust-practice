@@ -1,6 +1,8 @@
+use glob::{glob_with, MatchOptions};
 use rayon::prelude::*;
+use shared::make_thumbnail;
 use shared::Person;
-use std::marker::Sync;
+use std::{error::Error, fs::create_dir_all, marker::Sync};
 
 /// Mutate an array in parallel
 ///
@@ -137,4 +139,36 @@ pub fn map_reduce_person_age_in_parallel(
         .par_iter()
         .map(|p| p.age as i32)
         .reduce(|| 0, |acc, x| acc + x)
+}
+
+pub fn generate_jpg_thumbnails_in_parallel(thumb_dir: &str) -> Result<(), Box<dyn Error>> {
+    let options: MatchOptions = Default::default();
+    let files: Vec<_> = glob_with("*.jpg", options)?
+        .filter_map(|x| x.ok())
+        .collect();
+
+    if files.len() == 0 {
+        eprintln!("No JPG files found");
+        return Ok(());
+    }
+
+    create_dir_all(thumb_dir)?;
+
+    println!("Saving {} thumbnails into '{}'...", files.len(), thumb_dir);
+
+    let image_failures: Vec<_> = files
+        .par_iter()
+        .filter_map(|x| make_thumbnail(x, thumb_dir, 100).err())
+        .collect();
+
+    image_failures
+        .iter()
+        .for_each(|e| eprintln!("Error: {}", e));
+
+    println!(
+        "{} thumbnails saved successfully",
+        files.len() - image_failures.len()
+    );
+
+    Ok(())
 }

@@ -100,4 +100,12 @@ mod tests_explicit_threads {
         let age_sum = map_reduce_person_age_in_parallel(&vec, |age| age > 25);
         assert_eq!(age_sum, 87);
     }
+
+    #[test]
+    #[ignore]
+    fn test_generate_jpg_thumbnails_in_parallel() {
+        let dir = "images";
+        let result = generate_jpg_thumbnails_in_parallel(dir);
+        assert_eq!(result.is_ok(), true);
+    }
 }

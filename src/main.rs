@@ -162,4 +162,7 @@ fn main() {
     println!("{:?}", vec);
     let sorted_parallel = sort_string_vector_in_parallel(&mut vec);
     println!("{:?}", sorted_parallel);
+    // Generate thumbnails in parallel
+    let thumb_dir = "thumbnails";
+    generate_jpg_thumbnails_in_parallel(thumb_dir).unwrap();
 }

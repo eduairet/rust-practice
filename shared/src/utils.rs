@@ -1,4 +1,4 @@
-use image::Rgb;
+use image::{imageops::FilterType, ImageError, Rgb};
 use num::complex::Complex;
 use ring::digest::{Context, Digest, SHA256};
 use std::{
@@ -185,4 +185,48 @@ pub fn julia(c: Complex<f32>, x: u32, y: u32, width: u32, height: u32, max_iter:
 /// ```
 pub fn normalize(color: f32, factor: f32) -> u8 {
     ((color * factor).powf(0.8) * 255.) as u8
+}
+
+/// Create a thumbnail image
+///
+/// # Arguments
+///
+/// * `original` - A reference to a Path
+/// * `thumb_dir` - A reference to a Path
+/// * `longest_edge` - A u32 value
+///
+/// # Returns
+///
+/// * A Result<(), ImageError>
+///
+/// # Examples
+///
+/// ```ignore
+/// use shared::make_thumbnail;
+/// use std::{path::Path, fs::remove_dir_all};
+///
+/// let original = Path::new("image.jpg"); // Needs to exist
+/// let thumb_dir = Path::new("thumbnails");
+/// if !thumb_dir.exists() {
+///    std::fs::create_dir(thumb_dir).unwrap();
+/// }
+/// let longest_edge = 256;
+/// make_thumbnail(original, thumb_dir, longest_edge).unwrap();
+/// remove_dir_all(thumb_dir).unwrap();
+/// ```
+pub fn make_thumbnail<PA, PB>(
+    original: PA,
+    thumb_dir: PB,
+    longest_edge: u32,
+) -> Result<(), ImageError>
+where
+    PA: AsRef<Path>,
+    PB: AsRef<Path>,
+{
+    let img = image::open(original.as_ref())?;
+    let file_path = thumb_dir.as_ref().join(original);
+
+    Ok(img
+        .resize(longest_edge, longest_edge, FilterType::Nearest)
+        .save(file_path)?)
 }
