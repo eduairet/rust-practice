@@ -1,6 +1,8 @@
 use algorithms::*;
 use command_line::*;
 use compression::*;
+use cryptography::*;
+use data_encoding::HEXUPPER;
 use dirs::home_dir;
 use rand::{distributions::Alphanumeric, thread_rng, Rng};
 use rayon::prelude::*;
@@ -8,6 +10,7 @@ use shared::*;
 use std::{
     env,
     fs::{remove_dir_all, remove_file, File},
+    io::{BufReader, Write},
 };
 use threads::*;
 
@@ -165,4 +168,13 @@ fn main() {
     // Generate thumbnails in parallel
     let thumb_dir = "thumbnails";
     generate_jpg_thumbnails_in_parallel(thumb_dir).unwrap();
+    // Cryptography
+    let file = "file.txt";
+    let mut output = File::create(file).unwrap();
+    write!(output, "Hello, world!").unwrap();
+    let input = File::open(file).unwrap();
+    let reader = BufReader::new(input);
+    let digest = sha256_digest(reader).unwrap();
+    println!("SHA256: {}", HEXUPPER.encode(digest.as_ref()));
+    remove_file(file).unwrap();
 }
