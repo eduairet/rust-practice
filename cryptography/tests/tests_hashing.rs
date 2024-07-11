@@ -1,5 +1,6 @@
 use cryptography::*;
 use data_encoding::HEXUPPER;
+use ring::hmac;
 use std::{
     fs::{remove_file, File},
     io::{BufReader, Write},
@@ -8,6 +9,7 @@ use std::{
 
 #[cfg(test)]
 mod tests_hashing {
+
     use super::*;
 
     #[test]
@@ -29,5 +31,13 @@ mod tests_hashing {
 
         remove_file(file).unwrap();
         assert!(Path::new(file).exists() == false);
+    }
+
+    #[test]
+    fn test_sign_and_verify_hmac() {
+        let message = "Hello, world!";
+        let (key, signature) = sign_and_verify_hmac(message).unwrap();
+        let verification = hmac::verify(&key, message.as_bytes(), signature.as_ref()).unwrap();
+        assert_eq!(verification, ());
     }
 }

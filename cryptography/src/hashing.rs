@@ -1,4 +1,9 @@
-use ring::digest::{Context, Digest, SHA256};
+use ring::{
+    digest::{Context, Digest, SHA256},
+    error::Unspecified,
+    hmac::{self, Key, Tag},
+    rand::{self, SecureRandom},
+};
 use std::io::{Error, Read};
 
 /// Computes the SHA-256 digest of the data read from the given reader.
@@ -46,4 +51,33 @@ pub fn sha256_digest<R: Read>(mut reader: R) -> Result<Digest, Error> {
     }
 
     Ok(context.finish())
+}
+
+/// Signs the HMAC of the given message.
+///
+/// # Arguments
+///
+/// * `message` - The message to sign.
+///
+/// # Returns
+///
+/// A tuple containing the key and the signature.
+///
+/// # Examples
+///
+/// ```
+/// use cryptography::sign_and_verify_hmac;
+/// use ring::hmac;
+///
+/// let message = "Hello, world!";
+/// let (key, signature) = sign_and_verify_hmac(message).unwrap();
+/// hmac::verify(&key, message.as_bytes(), signature.as_ref()).unwrap();
+/// ```
+pub fn sign_and_verify_hmac(message: &str) -> Result<(Key, Tag), Unspecified> {
+    let mut key_value = [0u8; 32];
+    let rng = rand::SystemRandom::new();
+    rng.fill(&mut key_value)?;
+    let key = hmac::Key::new(hmac::HMAC_SHA256, &key_value);
+    let signature = hmac::sign(&key, message.as_bytes());
+    Ok((key, signature))
 }

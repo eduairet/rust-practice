@@ -6,6 +6,7 @@ use data_encoding::HEXUPPER;
 use dirs::home_dir;
 use rand::{distributions::Alphanumeric, thread_rng, Rng};
 use rayon::prelude::*;
+use ring::hmac;
 use shared::*;
 use std::{
     env,
@@ -168,7 +169,7 @@ fn main() {
     // Generate thumbnails in parallel
     let thumb_dir = "thumbnails";
     generate_jpg_thumbnails_in_parallel(thumb_dir).unwrap();
-    // Cryptography
+    // SHA256 digest
     let file = "file.txt";
     let mut output = File::create(file).unwrap();
     write!(output, "Hello, world!").unwrap();
@@ -177,4 +178,9 @@ fn main() {
     let digest = sha256_digest(reader).unwrap();
     println!("SHA256: {}", HEXUPPER.encode(digest.as_ref()));
     remove_file(file).unwrap();
+    // HMAC verification
+    let message = "Hello, world!";
+    let (key, signature) = sign_and_verify_hmac(message).unwrap();
+    println!("Signature: {:?}", signature);
+    hmac::verify(&key, message.as_bytes(), signature.as_ref()).unwrap();
 }
