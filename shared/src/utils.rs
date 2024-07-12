@@ -15,7 +15,7 @@ use std::{
 ///
 /// # Returns
 ///
-/// * A Result<(Digest, P), Error> which holds the digest of the file and the path to the file
+/// * A `Result<(Digest, P), Error>` which holds the digest of the file and the path to the file
 ///
 /// # Examples
 ///
@@ -72,7 +72,7 @@ pub fn is_iso(path: &Path) -> bool {
 ///
 /// # Returns
 ///
-/// * An Rgb<u8> value
+/// * An `Rgb<u8>` value
 ///
 /// # Examples
 ///
@@ -124,7 +124,7 @@ pub fn wavelength_to_rgb(wavelength: u32) -> Rgb<u8> {
 ///
 /// # Returns
 ///
-/// * A u32 value
+/// * A `u32` value
 ///
 /// # Examples
 ///
@@ -171,7 +171,7 @@ pub fn julia(c: Complex<f32>, x: u32, y: u32, width: u32, height: u32, max_iter:
 ///
 /// # Returns
 ///
-/// * A u8 value
+/// * A `u8` value
 ///
 /// # Examples
 ///
@@ -197,7 +197,7 @@ pub fn normalize(color: f32, factor: f32) -> u8 {
 ///
 /// # Returns
 ///
-/// * A Result<(), ImageError>
+/// * A `Result<(), ImageError>`
 ///
 /// # Examples
 ///

@@ -31,7 +31,7 @@ use walkdir::WalkDir;
 ///
 /// # Returns
 ///
-/// * An Option<i32> which holds the maximum value in the array
+/// * An `Option<i32>` which holds the maximum value in the array
 ///
 /// # Examples
 ///
@@ -115,7 +115,7 @@ pub fn parallel_pipeline(num_messages: usize, num_workers: usize) {
 ///
 /// # Returns
 ///
-/// * A tuple containing the first element as an empty tuple and the second element as a crossbeam_channel::Receiver<usize>
+/// * A tuple containing the first element as an empty tuple and the second element as a `crossbeam_channel::Receiver<usize>`
 ///
 /// # Examples
 ///
@@ -169,11 +169,11 @@ pub fn create_global_state() -> &'static Mutex<Vec<String>> {
 /// # Arguments
 ///
 /// * `token` - A string slice that holds the token to be inserted
-/// * `state` - A reference to a Mutex<Vec<String>> that holds the global state
+/// * `state` - A reference to a `Mutex<Vec<String>>` that holds the global state
 ///
 /// # Returns
 ///
-/// * A Result<(), Box<dyn Error>> where the error is a string slice
+/// * A `Result<(), Box<dyn Error>>` where the error is a string slice
 ///
 /// # Examples
 ///
@@ -249,7 +249,7 @@ pub fn calculate_sha256_sum_of_iso_files(
 ///
 /// # Returns
 ///
-/// * A Result<(), Box<dyn Error>> where the error is a string slice
+/// * A `Result<(), Box<dyn Error>>` where the error is a string slice
 ///
 /// # Examples
 ///
