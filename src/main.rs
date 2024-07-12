@@ -183,4 +183,9 @@ fn main() {
     let (key, signature) = sign_and_verify_hmac(message).unwrap();
     println!("Signature: {:?}", signature);
     hmac::verify(&key, message.as_bytes(), signature.as_ref()).unwrap();
+    // Salt and hash password with PBKDF2
+    let password = "ABCabc123?";
+    let (salt, hash) = salt_and_hash_password_with_pbkdf2(password).unwrap();
+    println!("Salt: {}", HEXUPPER.encode(&salt));
+    println!("Hash: {}", HEXUPPER.encode(&hash));
 }

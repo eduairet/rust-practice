@@ -1,4 +1,4 @@
-use cryptography::*;
+use cryptography::{sha256_digest, sign_and_verify_hmac};
 use data_encoding::HEXUPPER;
 use ring::hmac;
 use std::{

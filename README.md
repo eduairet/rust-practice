@@ -14,6 +14,7 @@ Rust exercises by Eduardo Aire Torres.
    2. [Parallel Tasks](./threads/src/parallel_tasks.rs)
 5. [Cryptography](./cryptography/)
    1. [Hashing](./cryptography/src/hashing.rs)
+   2. [Encryption](./cryptography/src/encryption.rs)
 
 ### References
 
