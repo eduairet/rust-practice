@@ -10,13 +10,14 @@ keywords = ["practice"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [workspace]
-members = ["algorithms", "command_line", "compression", "cryptography", "shared", "threads"]
+members = ["algorithms", "command_line", "compression", "cryptography", "data_structures", "shared", "threads"]
 
 [dependencies]
 algorithms = {path = "algorithms"}
 command_line = {path = "command_line"}
 compression = {path = "compression"}
 cryptography = {path = "cryptography"}
+data_structures = {path = "data_structures"}
 shared = {path = "shared"}
 threads = {path = "threads"}
 dirs = "5.0.1"

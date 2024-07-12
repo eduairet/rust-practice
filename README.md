@@ -15,6 +15,8 @@ Rust exercises by Eduardo Aire Torres.
 5. [Cryptography](./cryptography/)
    1. [Hashing](./cryptography/src/hashing.rs)
    2. [Encryption](./cryptography/src/encryption.rs)
+6. [Data Structures](./data_structures/)
+   1. [Custom Data Structures](./data_structures/src/custom_data_structures.rs)
 
 ### References
 

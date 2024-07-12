@@ -21,6 +21,7 @@ jobs:
         run: |
           cargo test -p algorithms --verbose -- --show-output
           cargo test -p command_line --verbose -- --show-output
-          cargo test -p threads --verbose -- --show-output
-          cargo test -p shared --verbose -- --show-output
           cargo test -p cryptography --verbose -- --show-output
+          cargo test -p data_structures --verbose -- --show-output
+          cargo test -p shared --verbose -- --show-output
+          cargo test -p threads --verbose -- --show-output
