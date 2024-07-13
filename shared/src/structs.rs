@@ -82,3 +82,19 @@ impl TerminalColor {
         TerminalColor { value, bold }
     }
 }
+
+/// Cat struct
+///
+/// Example:
+///
+/// ```
+/// use shared::Cat;
+///
+/// let cat = Cat { name: "Whiskers".to_string(), color: "Black".to_string() };
+/// println!("{:?}", cat); // Cat { name: "Whiskers", color: "Black" }
+/// ```
+#[derive(Debug)]
+pub struct Cat {
+    pub name: String,
+    pub color: String,
+}

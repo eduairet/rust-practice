@@ -3,6 +3,7 @@ use command_line::*;
 use compression::*;
 use cryptography::*;
 use data_encoding::HEXUPPER;
+use database::*;
 use dirs::home_dir;
 use rand::{distributions::Alphanumeric, thread_rng, Rng};
 use rayon::prelude::*;
@@ -188,4 +189,26 @@ fn main() {
     let (salt, hash) = salt_and_hash_password_with_pbkdf2(password).unwrap();
     println!("Salt: {}", HEXUPPER.encode(&salt));
     println!("Hash: {}", HEXUPPER.encode(&hash));
+    // SQLite
+    let database = "test.db";
+    delete_cats_database(database).unwrap();
+    create_sqlite_cats_database(database).unwrap();
+    let cats: Vec<Cat> = vec![
+        Cat {
+            name: String::from("Fluffy"),
+            color: String::from("White"),
+        },
+        Cat {
+            name: String::from("Whiskers"),
+            color: String::from("Black"),
+        },
+        Cat {
+            name: String::from("Socks"),
+            color: String::from("Gray"),
+        },
+    ];
+    let result = insert_select_cats(database, &cats).unwrap();
+    println!("{:?}", result);
+    delete_cats_database(database).unwrap();
+    remove_file(database).unwrap();
 }
