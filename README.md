@@ -17,6 +17,8 @@ Rust exercises by Eduardo Aire Torres.
    2. [Encryption](./cryptography/src/encryption.rs)
 6. [Data Structures](./data_structures/)
    1. [Custom Data Structures](./data_structures/src/custom_data_structures.rs)
+7. Database
+   1. [Sqlite](./database/src/sqlite.rs)
 
 ### References
 

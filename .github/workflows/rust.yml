@@ -25,3 +25,4 @@ jobs:
           cargo test -p data_structures --verbose -- --show-output
           cargo test -p shared --verbose -- --show-output
           cargo test -p threads --verbose -- --show-output
+          cargo test -p database --verbose -- --show-output
