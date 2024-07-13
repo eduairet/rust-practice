@@ -1,4 +1,4 @@
-use rusqlite::{params, Connection, Result};
+use rusqlite::{params, Connection, Params, Result};
 use shared::Cat;
 use std::{collections::HashMap, error::Error};
 
@@ -106,4 +106,71 @@ pub fn insert_select_cats(database: &str, cats: &Vec<Cat>) -> Result<Vec<Cat>, B
         .collect();
 
     cats_result.map_err(|e| Box::new(e) as Box<dyn Error>)
+}
+
+/// SQLite transaction types.
+///
+/// # Commit
+///
+/// Commit the transaction.
+///
+/// # Rollback
+///
+/// Rollback the transaction.
+///
+/// # Examples
+///
+/// ```
+/// use database::TransactionType;
+///
+/// let tx_type = TransactionType::Commit;
+/// ```
+pub enum TransactionType {
+    Commit,
+    Rollback,
+}
+
+/// Submit a database transaction.
+///
+/// # Arguments
+///
+/// * `database` - The name of the SQLite database.
+/// * `query` - The SQL query.
+/// * `params` - The query parameters.
+/// * `tx_type` - The transaction type.
+///
+/// # Examples
+///
+/// ```ignore
+/// use database::*;
+/// use rusqlite::params;
+///
+/// let database = "test.db";
+/// let quey_no_params = "DELETE FROM cat_colors";
+/// let transaction = submit_db_transaction(
+///    database,
+///    &quey_no_params,
+///    params![],
+///    TransactionType::Commit,
+/// );
+///
+/// assert!(transaction.is_ok());
+/// ```
+pub fn submit_db_transaction<P: Params>(
+    database: &str,
+    query: &str,
+    params: P,
+    tx_type: TransactionType,
+) -> Result<(), Box<dyn Error>> {
+    let mut conn = Connection::open(database).unwrap();
+    let tx = conn.transaction()?;
+
+    tx.execute(query, params)?;
+
+    let result = match tx_type {
+        TransactionType::Commit => tx.commit(),
+        TransactionType::Rollback => tx.rollback(),
+    };
+
+    result.map_err(|e| Box::new(e) as Box<dyn Error>)
 }

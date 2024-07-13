@@ -1,4 +1,5 @@
 use database::*;
+use rusqlite::params;
 use shared::Cat;
 
 #[cfg(test)]
@@ -41,5 +42,43 @@ mod tests_sqlite {
 
         delete_cats_database(database).unwrap();
         assert!(create_sqlite_cats_database(database).is_ok());
+    }
+
+    #[test]
+    #[ignore]
+    fn test_submit_db_transaction_commit() {
+        let database = "test.db";
+
+        delete_cats_database(database).unwrap();
+        assert!(create_sqlite_cats_database(database).is_ok());
+
+        let quey_no_params = "DELETE FROM cat_colors";
+        let transaction = submit_db_transaction(
+            database,
+            &quey_no_params,
+            params![],
+            TransactionType::Commit,
+        );
+
+        assert!(transaction.is_ok());
+    }
+
+    #[test]
+    #[ignore]
+    fn test_submit_db_transaction_rollback() {
+        let database = "test.db";
+
+        delete_cats_database(database).unwrap();
+        assert!(create_sqlite_cats_database(database).is_ok());
+
+        let quey_no_params = "DELETE FROM cat_colors";
+        let transaction = submit_db_transaction(
+            database,
+            &quey_no_params,
+            params![],
+            TransactionType::Rollback,
+        );
+
+        assert!(transaction.is_ok());
     }
 }

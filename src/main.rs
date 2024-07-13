@@ -8,6 +8,7 @@ use dirs::home_dir;
 use rand::{distributions::Alphanumeric, thread_rng, Rng};
 use rayon::prelude::*;
 use ring::hmac;
+use rusqlite::params;
 use shared::*;
 use std::{
     env,
@@ -209,6 +210,10 @@ fn main() {
     ];
     let result = insert_select_cats(database, &cats).unwrap();
     println!("{:?}", result);
+    let query = "INSERT INTO cat_colors (name) VALUES (?1)";
+    let transaction =
+        submit_db_transaction(database, query, params!["Red"], TransactionType::Commit);
+    println!("{:?}", transaction.unwrap());
     delete_cats_database(database).unwrap();
     remove_file(database).unwrap();
 }
