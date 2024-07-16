@@ -6,3 +6,4 @@ edition = "2021"
 [dependencies]
 shared = { path = "../shared" }
 rusqlite = "0.31.0"
+postgres = "0.19.7"

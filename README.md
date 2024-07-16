@@ -19,6 +19,7 @@ Rust exercises by Eduardo Aire Torres.
    1. [Custom Data Structures](./data_structures/src/custom_data_structures.rs)
 7. [Database](./database/)
    1. [Sqlite](./database/src/sqlite.rs)
+   2. [Postgres](./database/src/postgres.rs)
 
 ### References
 
