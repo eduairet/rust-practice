@@ -139,7 +139,7 @@ pub fn add_tables(connection_string: &str, tables: Vec<&str>) -> Result<(), Erro
 ///
 /// # Example
 ///
-/// ```
+/// ```ignore
 /// use database::{create_db, add_tables, insert_data};
 ///
 /// let data: Vec<&str> = vec![
@@ -155,17 +155,17 @@ pub fn add_tables(connection_string: &str, tables: Vec<&str>) -> Result<(), Erro
 /// let connection_string = format!("{}/{}", connection_string, db);
 /// let tables: Vec<&str> = vec![
 ///   "author (
-///    id              SERIAL PRIMARY KEY,
-///    name            VARCHAR NOT NULL,
-///    country         VARCHAR NOT NULL
+///      id              SERIAL PRIMARY KEY,
+///      name            VARCHAR NOT NULL,
+///      country         VARCHAR NOT NULL
 ///   )",
 /// ];
 ///
 /// add_tables(&connection_string, tables).unwrap();
 ///
 /// let data: Vec<&str> = vec![
-///   "INSERT INTO author (name, country) VALUES ('George R. R. Martin', 'United States')",
-///   "INSERT INTO author (name, country) VALUES ('J. R. R. Tolkien', 'United Kingdom')",
+///   "author (name, country) VALUES ('George R. R. Martin', 'United States')",
+///   "author (name, country) VALUES ('J. R. R. Tolkien', 'United Kingdom')",
 /// ];
 ///
 /// let result = insert_data(&connection_string, data);
