@@ -125,3 +125,58 @@ pub fn add_tables(connection_string: &str, tables: Vec<&str>) -> Result<(), Erro
 
     Ok(())
 }
+
+/// Insert data into a database.
+///
+/// # Arguments
+///
+/// * `connection_string` - A connection string to the PostgreSQL server.
+/// * `data` - A vector of strings representing the data to insert.
+///
+/// # Returns
+///
+/// A `Result` indicating whether the operation was successful.
+///
+/// # Example
+///
+/// ```
+/// use database::{create_db, add_tables, insert_data};
+///
+/// let data: Vec<&str> = vec![
+///    "INSERT INTO author (name, country) VALUES ('George R. R. Martin', 'United States')",
+///    "INSERT INTO author (name, country) VALUES ('J. R. R. Tolkien', 'United Kingdom')",
+/// ];
+///
+/// let connection_string = "postgresql://postgres:@localhost";
+/// let db = "test_db";
+///
+/// create_db(connection_string, db).unwrap();
+///
+/// let connection_string = format!("{}/{}", connection_string, db);
+/// let tables: Vec<&str> = vec![
+///   "author (
+///    id              SERIAL PRIMARY KEY,
+///    name            VARCHAR NOT NULL,
+///    country         VARCHAR NOT NULL
+///   )",
+/// ];
+///
+/// add_tables(&connection_string, tables).unwrap();
+///
+/// let data: Vec<&str> = vec![
+///   "INSERT INTO author (name, country) VALUES ('George R. R. Martin', 'United States')",
+///   "INSERT INTO author (name, country) VALUES ('J. R. R. Tolkien', 'United Kingdom')",
+/// ];
+///
+/// let result = insert_data(&connection_string, data);
+/// assert!(result.is_ok());
+/// ```
+pub fn insert_data(connection_string: &str, data: Vec<&str>) -> Result<(), Error> {
+    let mut client = Client::connect(connection_string, NoTls)?;
+
+    for row in data {
+        client.batch_execute(&format!("INSERT INTO {}", row))?;
+    }
+
+    Ok(())
+}
