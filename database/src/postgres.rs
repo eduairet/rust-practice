@@ -81,3 +81,47 @@ pub fn delete_db(connection_string: &str, db_name: &str) -> Result<(), Error> {
 
     Ok(())
 }
+
+/// Add tables to a database.
+///
+/// # Arguments
+///
+/// * `connection_string` - A connection string to the PostgreSQL server.
+/// * `tables` - A vector of strings representing the tables to create.
+///
+/// # Returns
+///
+/// A `Result` indicating whether the operation was successful.
+///
+/// # Example
+///
+/// ```ignore
+/// use database::add_tables;
+///
+/// let tables: Vec<&str> = vec![
+///     "author (
+///       id              SERIAL PRIMARY KEY,
+///       name            VARCHAR NOT NULL,
+///       country         VARCHAR NOT NULL
+///     )",
+///     "book  (
+///       id              SERIAL PRIMARY KEY,
+///       title           VARCHAR NOT NULL,
+///       author_id       INTEGER NOT NULL REFERENCES author
+///     )",
+///   ];
+///
+/// let connection_string = "postgresql://postgres:@localhost/test_db";
+///
+/// let result = add_tables(connection_string, tables);
+/// assert!(result.is_ok());
+/// ```
+pub fn add_tables(connection_string: &str, tables: Vec<&str>) -> Result<(), Error> {
+    let mut client = Client::connect(connection_string, NoTls)?;
+
+    for table in tables {
+        client.batch_execute(&format!("CREATE TABLE IF NOT EXISTS {}", table))?;
+    }
+
+    Ok(())
+}
