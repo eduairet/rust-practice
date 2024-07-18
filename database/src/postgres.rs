@@ -1,4 +1,6 @@
+use csv::ReaderBuilder;
 use postgres::{Client, Error, NoTls};
+use std::fs::File;
 
 /// Create a new database.
 ///
@@ -176,6 +178,79 @@ pub fn insert_data(connection_string: &str, data: Vec<&str>) -> Result<(), Error
 
     for row in data {
         client.batch_execute(&format!("INSERT INTO {}", row))?;
+    }
+
+    Ok(())
+}
+
+/// Create a new database from a CSV file.
+///
+/// # Arguments
+///
+/// * `connection_string` - A connection string to the PostgreSQL server.
+/// * `db` - The name of the database to create.
+/// * `file_path` - The path to the CSV file.
+///
+/// # Returns
+///
+/// A `Result` indicating whether the operation was successful.
+///
+/// # Example
+///
+/// ```ignore
+/// use database::create_db_from_csv;
+///
+/// let connection_string = "postgresql://postgres:@localhost";
+/// let db_name = "moma";
+/// let file_path = "artist.csv";
+/// let table_name = "artist";
+///
+/// let result = create_db_from_csv(connection_string, db_name, file_path, table_name);
+/// assert!(result.is_ok());
+/// ```
+pub fn create_db_from_csv(
+    connection_string: &str,
+    db: &str,
+    file_path: &str,
+    table_name: &str,
+) -> Result<(), Error> {
+    create_db(connection_string, db)?;
+
+    let file = File::open(file_path).unwrap();
+    let mut rdr = ReaderBuilder::new().has_headers(true).from_reader(file);
+
+    let headers = rdr.headers().unwrap().clone();
+
+    let columns: Vec<String> = headers
+        .iter()
+        .map(|h| format!("{} VARCHAR NULL", h.replace(" ", "_")))
+        .collect();
+
+    let columns_clean: Vec<String> = headers.iter().map(|h| h.replace(" ", "_")).collect();
+
+    let create_table_query = format!(
+        "CREATE TABLE IF NOT EXISTS {} (id SERIAL PRIMARY KEY,{})",
+        table_name,
+        columns.join(", ")
+    );
+
+    let connection_string_full = format!("{}/{}", connection_string, db);
+    let mut client = Client::connect(&connection_string_full, NoTls)?;
+    client.batch_execute(&create_table_query)?;
+
+    for result in rdr.records() {
+        let record = result.unwrap();
+        let values: Vec<String> = record
+            .iter()
+            .map(|v| format!("'{}'", v.replace("'", "''")))
+            .collect();
+        let insert_query = format!(
+            "INSERT INTO {} ({}) VALUES ({})",
+            table_name,
+            columns_clean.join(", "),
+            values.join(", ")
+        );
+        client.batch_execute(&insert_query)?;
     }
 
     Ok(())

@@ -1,4 +1,4 @@
-use database::{add_tables, create_db, delete_db, insert_data};
+use database::{add_tables, create_db, create_db_from_csv, delete_db, insert_data};
 use postgres::{Client, Error, NoTls};
 use std::collections::HashMap;
 
@@ -120,6 +120,41 @@ mod tests_postgres {
             assert!(authors.contains_key(author_name));
         }
 
+        let _ = fixture_delete_db(&connection_string, &db_name);
+    }
+
+    #[test]
+    #[ignore]
+    fn test_create_db_from_csv() {
+        let connection_string = "postgresql://postgres:@localhost";
+        let db_name = "moma";
+        let file_path = "artist.csv";
+        let table_name = "artist";
+
+        let _ = fixture_delete_db(&connection_string, &db_name);
+
+        let result = create_db_from_csv(connection_string, db_name, file_path, table_name);
+        assert!(result.is_ok());
+
+        let connection_string_full = format!("{}/{}", connection_string, db_name);
+        let mut client = Client::connect(&connection_string_full, NoTls).unwrap();
+
+        for row in client
+            .query(
+                "SELECT Nationality, COUNT(Nationality) AS Count 
+                FROM artist GROUP BY Nationality ORDER BY Count DESC",
+                &[],
+            )
+            .unwrap()
+        {
+            let (nationality, count): (Option<String>, Option<i64>) = (row.get(0), row.get(1));
+
+            assert!(nationality.is_some());
+            assert!(count.is_some());
+            println!("{:?} {:?}", nationality, count);
+        }
+
+        client.close().unwrap();
         let _ = fixture_delete_db(&connection_string, &db_name);
     }
 }
