@@ -26,3 +26,4 @@ jobs:
           cargo test -p shared --verbose -- --show-output
           cargo test -p threads --verbose -- --show-output
           cargo test -p database --verbose -- --show-output
+          cargo test -p date_time --verbose -- --show-output

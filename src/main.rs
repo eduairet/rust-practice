@@ -4,6 +4,7 @@ use compression::*;
 use cryptography::*;
 use data_encoding::HEXUPPER;
 use database::*;
+use date_time::*;
 use dirs::home_dir;
 use rand::{distributions::Alphanumeric, thread_rng, Rng};
 use rayon::prelude::*;
@@ -216,4 +217,18 @@ fn main() {
     println!("{:?}", transaction.unwrap());
     delete_cats_database(database).unwrap();
     remove_file(database).unwrap();
+    // Calculate elapsed time
+    let result = get_two_code_sections_elapsed_time(|| {
+        let mut rng = thread_rng();
+        let target_number = 50;
+        let mut _turn = 0;
+        loop {
+            _turn += 1;
+            let current_number = rng.gen_range(1..101);
+            if current_number == target_number {
+                break;
+            }
+        }
+    });
+    println!("Number guessed in: {}", result);
 }
