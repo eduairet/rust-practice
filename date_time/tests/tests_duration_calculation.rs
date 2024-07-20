@@ -1,4 +1,5 @@
-use date_time::get_two_code_sections_elapsed_time;
+use chrono::{Duration, Utc};
+use date_time::{check_days_from_date_time, get_two_code_sections_elapsed_time};
 
 #[cfg(test)]
 mod tests_duration_calculation {
@@ -14,5 +15,32 @@ mod tests_duration_calculation {
         });
         print!("{}", result);
         assert_eq!(result.contains("Elapsed time:"), true);
+    }
+
+    #[test]
+    fn test_check_days_from_date_time() {
+        let date_time = Utc::now() + Duration::days(2);
+        let result = check_days_from_date_time(date_time);
+        assert_eq!(result, "1 days ahead");
+
+        let date_time = Utc::now();
+        let result = check_days_from_date_time(date_time);
+        assert_eq!(result, "Today");
+
+        let date_time = Utc::now() - Duration::days(1);
+        let result = check_days_from_date_time(date_time);
+        assert_eq!(result, "Yesterday");
+
+        let date_time = Utc::now() - Duration::days(2);
+        let result = check_days_from_date_time(date_time);
+        assert_eq!(result, "This week");
+
+        let date_time = Utc::now() - Duration::days(8);
+        let result = check_days_from_date_time(date_time);
+        assert_eq!(result, "Last week");
+
+        let date_time = Utc::now() - Duration::days(15);
+        let result = check_days_from_date_time(date_time);
+        assert_eq!(result, "15 days ago");
     }
 }

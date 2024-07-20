@@ -21,6 +21,7 @@ Rust exercises by Eduardo Aire Torres.
    1. [Sqlite](./database/src/sqlite.rs)
    2. [Postgres](./database/src/postgres.rs)
 8. [Date & Time](./date_time/)
+   1. [Duration and Calculation](./date_time/src/duration_calculation.rs)
 
 ### References
 
