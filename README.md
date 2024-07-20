@@ -20,6 +20,7 @@ Rust exercises by Eduardo Aire Torres.
 7. [Database](./database/)
    1. [Sqlite](./database/src/sqlite.rs)
    2. [Postgres](./database/src/postgres.rs)
+8. [Date & Time](./date_time/)
 
 ### References
 
