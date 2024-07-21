@@ -1,4 +1,4 @@
-use chrono::{DateTime, Utc};
+use chrono::{DateTime, Local, Utc};
 use std::time::Instant;
 
 /// Get the elapsed time between two code sections
@@ -56,4 +56,12 @@ pub fn check_days_from_date_time(date_time: DateTime<Utc>) -> String {
         8..=14 => String::from("Last week"),
         _ => format!("{} days ago", num_days),
     }
+}
+
+pub fn convert_date_timezone(local_datetime: DateTime<Local>) -> DateTime<Local> {
+    let naive_utc = local_datetime.naive_utc();
+    let offset = local_datetime.offset().clone();
+    let offset_datetime = DateTime::<Local>::from_naive_utc_and_offset(naive_utc, offset);
+    // TODO add convert to other datetime
+    offset_datetime
 }

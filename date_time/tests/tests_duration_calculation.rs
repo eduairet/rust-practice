@@ -1,5 +1,7 @@
-use chrono::{Duration, Utc};
-use date_time::{check_days_from_date_time, get_two_code_sections_elapsed_time};
+use chrono::{Duration, Local, Utc};
+use date_time::{
+    check_days_from_date_time, convert_date_timezone, get_two_code_sections_elapsed_time,
+};
 
 #[cfg(test)]
 mod tests_duration_calculation {
@@ -42,5 +44,12 @@ mod tests_duration_calculation {
         let date_time = Utc::now() - Duration::days(15);
         let result = check_days_from_date_time(date_time);
         assert_eq!(result, "15 days ago");
+    }
+
+    #[test]
+    fn test_convert_date_timezone() {
+        let date_time = Local::now();
+        let offset_datetime = convert_date_timezone(date_time);
+        assert_eq!(date_time, offset_datetime);
     }
 }
