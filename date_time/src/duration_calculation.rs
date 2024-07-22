@@ -1,4 +1,4 @@
-use chrono::{DateTime, Local, Utc};
+use chrono::{DateTime, Duration, FixedOffset, Local, Utc};
 use std::time::Instant;
 
 /// Get the elapsed time between two code sections
@@ -58,10 +58,35 @@ pub fn check_days_from_date_time(date_time: DateTime<Utc>) -> String {
     }
 }
 
-pub fn convert_date_timezone(local_datetime: DateTime<Local>) -> DateTime<Local> {
+/// Offset the date time to a specific time zone
+///
+/// # Arguments
+///
+/// * `local_datetime` - A local date time to offset
+/// * `offset_hours` - The offset hours to adjust the date time
+///
+/// # Returns
+///
+/// A tuple of the adjusted date time and the new offset
+///
+/// # Example
+///
+/// ```
+/// use date_time::offset_date_timezone;
+/// use chrono::{DateTime, Local};
+///
+/// let date_time = Local::now();
+/// let (adjusted_datetime, ..) = offset_date_timezone(date_time, 2);
+/// println!("Adjusted datetime: {:?}", adjusted_datetime);
+/// ```
+pub fn offset_date_timezone(
+    local_datetime: DateTime<Local>,
+    offset_hours: i64,
+) -> (DateTime<FixedOffset>, FixedOffset) {
     let naive_utc = local_datetime.naive_utc();
-    let offset = local_datetime.offset().clone();
-    let offset_datetime = DateTime::<Local>::from_naive_utc_and_offset(naive_utc, offset);
-    // TODO add convert to other datetime
-    offset_datetime
+    let offset_duration = Duration::hours(offset_hours);
+    let offset_datetime = naive_utc + offset_duration;
+    let new_offset = FixedOffset::east_opt(offset_hours as i32 * 3600).unwrap();
+    let adjusted_datetime = DateTime::from_naive_utc_and_offset(offset_datetime, new_offset);
+    (adjusted_datetime, new_offset)
 }

@@ -1,6 +1,6 @@
 use chrono::{Duration, Local, Utc};
 use date_time::{
-    check_days_from_date_time, convert_date_timezone, get_two_code_sections_elapsed_time,
+    check_days_from_date_time, get_two_code_sections_elapsed_time, offset_date_timezone,
 };
 
 #[cfg(test)]
@@ -47,9 +47,10 @@ mod tests_duration_calculation {
     }
 
     #[test]
-    fn test_convert_date_timezone() {
+    fn test_offset_date_timezone() {
         let date_time = Local::now();
-        let offset_datetime = convert_date_timezone(date_time);
-        assert_eq!(date_time, offset_datetime);
+        let (adjusted_datetime, ..) = offset_date_timezone(date_time, 2);
+        println!("Adjusted datetime: {:?}", adjusted_datetime);
+        assert_eq!(adjusted_datetime.offset().local_minus_utc(), 2 * 3600);
     }
 }
