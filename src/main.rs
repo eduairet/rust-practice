@@ -245,4 +245,20 @@ fn main() {
     let (time, date) = examine_date_time(date_time);
     println!("{}", time);
     println!("{}", date);
+    // Convert date to Unix timestamp
+    let date_string = "2000-01-01 00:00:01";
+    let date_to_unix = convert_date_to_unix(date_string);
+    println!("{} to unix: {:?}", date_string, date_to_unix);
+    // Convert Unix timestamp to date
+    let unix_timestamp = 946684801;
+    let unix_to_date = convert_unix_to_date(unix_timestamp);
+    println!("{} to date: {:?}", unix_timestamp, unix_to_date);
+    // Get formatted date time
+    let date_time = Utc::now();
+    let (simple, rfc2822, rfc3339, custom) =
+        get_formatted_date_time(date_time, "%Y-%m-%d %H:%M:%S");
+    println!("Simple: {}", simple);
+    println!("RFC2822: {}", rfc2822);
+    println!("RFC3339: {}", rfc3339);
+    println!("Custom: {}", custom);
 }
