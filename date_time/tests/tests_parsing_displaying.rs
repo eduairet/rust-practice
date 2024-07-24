@@ -1,5 +1,5 @@
-use chrono::Utc;
-use date_time::examine_date_time;
+use chrono::{NaiveDate, Utc};
+use date_time::{convert_date_to_unix, convert_unix_to_date, examine_date_time};
 use regex::Regex;
 
 #[cfg(test)]
@@ -31,5 +31,24 @@ mod tests_parsing_displaying {
             date_regex.is_match(&date),
             "Date output does not match expected format."
         );
+    }
+
+    #[test]
+    fn test_convert_date_to_unix() {
+        let date_string = "2000-01-01 00:00:01";
+
+        let date_to_unix = convert_date_to_unix(date_string);
+        let expected_date_to_unix = NaiveDate::from_ymd_opt(2000, 1, 1)
+            .unwrap()
+            .and_hms_opt(0, 0, 1)
+            .unwrap()
+            .and_utc()
+            .timestamp();
+        print!("{} to unix: {:?}\n", date_string, date_to_unix);
+        assert_eq!(date_to_unix, expected_date_to_unix);
+
+        let unix_to_date = convert_unix_to_date(date_to_unix);
+        print!("{} to date: {:?}\n", date_to_unix, unix_to_date);
+        assert_eq!(unix_to_date, date_string);
     }
 }

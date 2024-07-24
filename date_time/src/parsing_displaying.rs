@@ -1,4 +1,4 @@
-use chrono::{DateTime, Datelike, Timelike, Utc};
+use chrono::{DateTime, Datelike, NaiveDateTime, Timelike, Utc};
 
 /// Examine the current date and time
 ///
@@ -49,4 +49,54 @@ pub fn examine_date_time(data_time: DateTime<Utc>) -> (String, String) {
     );
 
     (time, date)
+}
+
+/// Convert a date string to a Unix timestamp
+///
+/// # Arguments
+///
+/// * `date` - A date string in the format "YYYY-MM-DD HH:MM:SS"
+///
+/// # Returns
+///
+/// A Unix timestamp
+///
+/// # Examples
+///
+/// ```
+/// use date_time::convert_date_to_unix;
+///
+/// let date_string = "2000-01-01 00:00:01";
+/// let date_to_unix = convert_date_to_unix(date_string);
+/// println!("{} to unix: {:?}", date_string, date_to_unix);
+/// ```
+pub fn convert_date_to_unix(date: &str) -> i64 {
+    NaiveDateTime::parse_from_str(date, "%Y-%m-%d %H:%M:%S")
+        .unwrap()
+        .and_utc()
+        .timestamp()
+}
+
+/// Convert a Unix timestamp to a date string
+///
+/// # Arguments
+///
+/// * `unix_timestamp` - A Unix timestamp
+///
+/// # Returns
+///
+/// A date string in the format "YYYY-MM-DD HH:MM:SS"
+///
+/// # Examples
+///
+/// ```
+/// use date_time::convert_unix_to_date;
+///
+/// let unix_timestamp = 946684801;
+/// let unix_to_date = convert_unix_to_date(unix_timestamp);
+/// println!("{} to date: {:?}", unix_timestamp, unix_to_date);
+/// ```
+pub fn convert_unix_to_date(unix_timestamp: i64) -> String {
+    let date_time = DateTime::<Utc>::from_timestamp(unix_timestamp, 0).unwrap();
+    date_time.format("%Y-%m-%d %H:%M:%S").to_string()
 }
