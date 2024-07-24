@@ -1,4 +1,15 @@
-use chrono::{DateTime, Datelike, NaiveDateTime, Timelike, Utc};
+use chrono::{DateTime, Datelike, NaiveDateTime, ParseError, TimeZone, Timelike, Utc};
+use lazy_static::lazy_static;
+use regex::Regex;
+
+lazy_static! {
+    pub static ref SIMPLE_DATETIME_REGEX: Regex =
+        Regex::new(r"\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}").unwrap();
+    pub static ref RFC2822_DATETIME_REGEX: Regex =
+        Regex::new(r"\w{3}, \d{1,2} \w{3} \d{4} \d{2}:\d{2}:\d{2} [+-]\d{4}").unwrap();
+    pub static ref RFC3339_DATETIME_REGEX: Regex =
+        Regex::new(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d+[+-]\d{2}:\d{2}").unwrap();
+}
 
 /// Examine the current date and time
 ///
@@ -134,4 +145,45 @@ pub fn get_formatted_date_time(
     let rfc3339 = format!("UTC now in RFC 3339 is: {}", datetime.to_rfc3339());
     let custom = format!("UTC now in a custom format is: {}", datetime.format(format));
     (simple, rfc2822, rfc3339, custom)
+}
+
+/// Parse a date and time string to a `DateTime<Utc>` instance
+///
+/// # Arguments
+///
+/// * `datetime_string` - A date and time string
+/// * `format` - A format string
+///
+/// # Returns
+///
+/// A `DateTime<Utc>` instance
+///
+/// # Examples
+///
+/// ```
+/// use date_time::parse_string_to_datetime;
+///
+/// let datetime_string = "2000-01-01 00:00:01";
+/// let format = "%Y-%m-%d %H:%M:%S";
+/// let result = parse_string_to_datetime(datetime_string, format).unwrap();
+/// println!("{:?}", result);
+/// ```
+pub fn parse_string_to_datetime(
+    datetime_string: &str,
+    format: &str,
+) -> Result<DateTime<Utc>, ParseError> {
+    let result = match datetime_string {
+        _ if RFC2822_DATETIME_REGEX.is_match(datetime_string) => {
+            DateTime::parse_from_rfc2822(datetime_string)?.to_utc()
+        }
+        _ if RFC3339_DATETIME_REGEX.is_match(datetime_string) => {
+            DateTime::parse_from_rfc3339(datetime_string)?.to_utc()
+        }
+        _ => {
+            let naive_datetime = NaiveDateTime::parse_from_str(datetime_string, format)?;
+            Utc.from_utc_datetime(&naive_datetime)
+        }
+    };
+
+    Ok(result)
 }

@@ -1,6 +1,8 @@
 use chrono::{NaiveDate, Utc};
 use date_time::{
     convert_date_to_unix, convert_unix_to_date, examine_date_time, get_formatted_date_time,
+    parse_string_to_datetime, RFC2822_DATETIME_REGEX, RFC3339_DATETIME_REGEX,
+    SIMPLE_DATETIME_REGEX,
 };
 use regex::Regex;
 
@@ -13,6 +15,7 @@ mod tests_parsing_displaying {
     fn test_examine_date_time() {
         let date_time = Utc::now();
         let (time, date) = examine_date_time(date_time);
+
         println!("{}", time);
         println!("{}", date);
 
@@ -58,37 +61,60 @@ mod tests_parsing_displaying {
     fn test_get_formatted_date_time() {
         let date_time = Utc::now();
         let (simple, rfc2822, rfc3339, custom) =
-            get_formatted_date_time(date_time, "%Y-%m-%d %H:%M:%S");
+            get_formatted_date_time(date_time, "%Y-%m-%d %H-%M-%S");
 
-        print!("Simple: {}\n", simple);
-        print!("RFC2822: {}\n", rfc2822);
-        print!("RFC3339: {}\n", rfc3339);
-        print!("Custom: {}\n", custom);
+        println!("Simple: {}", simple);
+        println!("RFC2822: {}", rfc2822);
+        println!("RFC3339: {}", rfc3339);
+        println!("Custom: {}", custom);
 
-        let simple_regex = Regex::new(r"\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}").unwrap();
         assert!(
-            simple_regex.is_match(&simple),
+            SIMPLE_DATETIME_REGEX.is_match(&simple),
             "Simple output does not match expected format."
         );
 
-        let rfc2822_regex =
-            Regex::new(r"\w{3}, \d{2} \w{3} \d{4} \d{2}:\d{2}:\d{2} [+-]\d{4}").unwrap();
         assert!(
-            rfc2822_regex.is_match(&rfc2822),
+            RFC2822_DATETIME_REGEX.is_match(&rfc2822),
             "RFC2822 output does not match expected format."
         );
 
-        let rfc3339_regex =
-            Regex::new(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d+\+\d{2}:\d{2}").unwrap();
         assert!(
-            rfc3339_regex.is_match(&rfc3339),
+            RFC3339_DATETIME_REGEX.is_match(&rfc3339),
             "RFC3339 output does not match expected format."
         );
 
-        let custom_regex = Regex::new(r"\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}").unwrap();
+        let custom_regex = Regex::new(r"\d{4}-\d{2}-\d{2} \d{2}-\d{2}-\d{2}").unwrap();
         assert!(
             custom_regex.is_match(&custom),
             "Custom output does not match expected format."
+        );
+    }
+
+    #[test]
+    fn test_parse_string_to_datetime() {
+        let datetime_string_rfc2822 = "Tue, 1 Jul 2003 10:52:37 +0200";
+        let datetime_string_rfc3339 = "2024-07-24T04:43:01.104103+00:00";
+        let datetime_string_custom = "1996-12-19 16:39:57";
+
+        let datetime_rfc2822 = parse_string_to_datetime(datetime_string_rfc2822, "");
+        let datetime_rfc3339 = parse_string_to_datetime(datetime_string_rfc3339, "");
+        let datetime_custom = parse_string_to_datetime(datetime_string_custom, "%Y-%m-%d %H:%M:%S");
+
+        println!("RFC 2822 datetime: {:?}", datetime_rfc2822);
+        println!("RFC 3339 datetime: {:?}", datetime_rfc3339);
+        println!("Custom datetime: {:?}", datetime_custom);
+
+        assert!(
+            datetime_rfc2822.is_ok(),
+            "Failed to parse RFC 2822 datetime string."
+        );
+        assert!(
+            datetime_rfc3339.is_ok(),
+            "Failed to parse RFC 3339 datetime string."
+        );
+        assert!(
+            datetime_custom.is_ok(),
+            "Failed to parse custom datetime string."
         );
     }
 }
