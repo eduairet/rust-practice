@@ -1,4 +1,5 @@
 use algorithms::*;
+use chrono::{Duration, Local, TimeZone, Utc};
 use command_line::*;
 use compression::*;
 use cryptography::*;
@@ -231,4 +232,17 @@ fn main() {
         }
     });
     println!("Number guessed in: {}", result);
+    // Check days from date time
+    let date_time = Utc::now() + Duration::days(2);
+    let result = check_days_from_date_time(date_time);
+    println!("{}", result);
+    // Offset date timezone
+    let date_time = Local::now();
+    let (adjusted_datetime, ..) = offset_date_timezone(date_time, 2);
+    println!("Adjusted datetime: {:?}", adjusted_datetime);
+    // Examine date time
+    let date_time = Utc.with_ymd_and_hms(1992, 9, 4, 18, 0, 0).unwrap();
+    let (time, date) = examine_date_time(date_time);
+    println!("{}", time);
+    println!("{}", date);
 }
