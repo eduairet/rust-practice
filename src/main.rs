@@ -8,6 +8,7 @@ use database::*;
 use date_time::*;
 use development_tools::*;
 use dirs::home_dir;
+use log::error;
 use rand::{distributions::Alphanumeric, thread_rng, Rng};
 use rayon::prelude::*;
 use ring::hmac;
@@ -24,6 +25,11 @@ fn main() {
     // Log debug message
     env_logger::init();
     log_debug_message("This is a debug message");
+    // Log error message
+    let error_log = log_error_message("This is an error message");
+    if let Err(err) = error_log {
+        error!("Failed to execute query: {}", err);
+    }
 
     // Generate random numbers
     println!("Random u8: {}", generate_random_numbers::<u8>());
