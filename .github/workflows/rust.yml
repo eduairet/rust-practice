@@ -23,7 +23,8 @@ jobs:
           cargo test -p command_line --verbose -- --show-output
           cargo test -p cryptography --verbose -- --show-output
           cargo test -p data_structures --verbose -- --show-output
-          cargo test -p shared --verbose -- --show-output
-          cargo test -p threads --verbose -- --show-output
           cargo test -p database --verbose -- --show-output
           cargo test -p date_time --verbose -- --show-output
+          cargo test -p development_tools --verbose -- --show-output
+          cargo test -p shared --verbose -- --show-output
+          cargo test -p threads --verbose -- --show-output

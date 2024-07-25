@@ -1,0 +1,8 @@
+[package]
+name = "development_tools"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+env_logger = "0.11.4"
+log = "0.4.22"

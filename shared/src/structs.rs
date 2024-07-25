@@ -12,7 +12,8 @@ use rand::{
 /// use shared::Point;
 ///
 /// let point = Point { x: 1, y: 2 };
-/// println!("{:?}", point); // Point { x: 1, y: 2 }
+/// assert_eq!(point.x, 1);
+/// assert_eq!(point.y, 2);
 /// ```
 #[derive(Debug)]
 pub struct Point {
@@ -30,7 +31,10 @@ impl Distribution<Point> for Standard {
     ///
     /// let mut rng = rand::thread_rng();
     /// let point: Point = rng.gen();
-    /// println!("{:?}", point); // Point { x: 1, y: 2 }
+    /// assert!(point.x >= std::i32::MIN);
+    /// assert!(point.x <= std::i32::MAX);
+    /// assert!(point.y >= std::i32::MIN);
+    /// assert!(point.y <= std::i32::MAX);
     /// ```
     fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Point {
         let (rand_x, rand_y) = rng.gen();
@@ -49,7 +53,8 @@ impl Distribution<Point> for Standard {
 /// use shared::Person;
 ///
 /// let person = Person::new("John".to_string(), 30);
-/// println!("{:?}", person); // Person { name: "John", age: 30 }
+/// assert_eq!(person.name, "John");
+/// assert_eq!(person.age, 30);
 /// ```
 #[derive(Debug)]
 pub struct Person {
@@ -70,7 +75,8 @@ impl Person {
 /// use shared::{TerminalColor, Colors};
 ///
 /// let terminal_color = TerminalColor::new(Some(Colors::Red), true);
-/// println!("{:?}", terminal_color); // TerminalColor { value: Some(Red), bold: true }
+/// assert_eq!(terminal_color.value.unwrap(), Colors::Red);
+/// assert!(terminal_color.bold);
 /// ```
 #[derive(Debug)]
 pub struct TerminalColor {
@@ -91,7 +97,8 @@ impl TerminalColor {
 /// use shared::Cat;
 ///
 /// let cat = Cat { name: "Whiskers".to_string(), color: "Black".to_string() };
-/// println!("{:?}", cat); // Cat { name: "Whiskers", color: "Black" }
+/// assert_eq!(cat.name, "Whiskers");
+/// assert_eq!(cat.color, "Black");
 /// ```
 #[derive(Debug)]
 pub struct Cat {

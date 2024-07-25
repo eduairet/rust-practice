@@ -6,9 +6,9 @@
 /// use shared::Colors;
 ///
 /// let color = Colors::Red;
-/// println!("{:?}", color); // Red
+/// assert_eq!(color, Colors::Red);
 /// ```
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum Colors {
     Red,
     Blue,

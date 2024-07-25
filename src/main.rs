@@ -6,6 +6,7 @@ use cryptography::*;
 use data_encoding::HEXUPPER;
 use database::*;
 use date_time::*;
+use development_tools::*;
 use dirs::home_dir;
 use rand::{distributions::Alphanumeric, thread_rng, Rng};
 use rayon::prelude::*;
@@ -20,6 +21,10 @@ use std::{
 use threads::*;
 
 fn main() {
+    // Log debug message
+    env_logger::init();
+    log_debug_message("This is a debug message");
+
     // Generate random numbers
     println!("Random u8: {}", generate_random_numbers::<u8>());
     println!("Random f64: {}", generate_random_numbers::<f64>());
@@ -261,4 +266,9 @@ fn main() {
     println!("RFC2822: {}", rfc2822);
     println!("RFC3339: {}", rfc3339);
     println!("Custom: {}", custom);
+    // Parse date time
+    let datetime_string = "2000-01-01 00:00:01";
+    let format = "%Y-%m-%d %H:%M:%S";
+    let result = parse_string_to_datetime(datetime_string, format).unwrap();
+    println!("{:?}", result);
 }

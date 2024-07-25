@@ -23,7 +23,8 @@ use std::{
 /// use shared::compute_digest;
 ///
 /// let (digest, filepath) = compute_digest("Cargo.toml").unwrap();
-/// println!("{:?}", digest);
+/// assert_eq!(digest.as_ref().len(), 32);
+/// assert_eq!(filepath, "Cargo.toml");
 /// ```
 pub fn compute_digest<P: AsRef<Path>>(filepath: P) -> Result<(Digest, P), Error> {
     let mut buf_reader = BufReader::new(File::open(&filepath)?);
@@ -82,7 +83,7 @@ pub fn is_iso(path: &Path) -> bool {
 ///
 /// let wavelength = 500;
 /// let rgb = wavelength_to_rgb(wavelength);
-/// println!("{:?}", rgb);
+/// assert_eq!(rgb, Rgb([0, 255, 146]));
 /// ```
 pub fn wavelength_to_rgb(wavelength: u32) -> Rgb<u8> {
     let wave = wavelength as f32;
@@ -139,7 +140,7 @@ pub fn wavelength_to_rgb(wavelength: u32) -> Rgb<u8> {
 /// let height = 1024;
 /// let max_iter = 300;
 /// let i = julia(c, x, y, width, height, max_iter);
-/// println!("{}", i);
+/// assert_eq!(i, 0);
 /// ```
 pub fn julia(c: Complex<f32>, x: u32, y: u32, width: u32, height: u32, max_iter: u32) -> u32 {
     let width = width as f32;
@@ -181,7 +182,7 @@ pub fn julia(c: Complex<f32>, x: u32, y: u32, width: u32, height: u32, max_iter:
 /// let color = 0.5;
 /// let factor = 0.5;
 /// let normalized_color = normalize(color, factor);
-/// println!("{}", normalized_color);
+/// assert_eq!(normalized_color, 84);
 /// ```
 pub fn normalize(color: f32, factor: f32) -> u8 {
     ((color * factor).powf(0.8) * 255.) as u8
