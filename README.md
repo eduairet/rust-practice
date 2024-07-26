@@ -24,7 +24,8 @@ Rust exercises by Eduardo Aire Torres.
    1. [Duration and Calculation](./date_time/src/duration_calculation.rs)
    2. [Parsing and Displaying](./date_time/src/parsing_displaying.rs)
 9. [Development Tools](./development_tools/)
-   1. [Logging](./development_tools/src/log_messages.rs)
+   1. [Logging Messages](./development_tools/src/log_messages.rs)
+   2. [Configure Logging](./development_tools/src/configure_logging.rs)
 
 ### References
 
