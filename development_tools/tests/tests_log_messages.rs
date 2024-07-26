@@ -2,6 +2,7 @@ use development_tools::{log_debug_message, log_error_message, ConsoleLogger, Mul
 use env_logger::{self, Builder, Target};
 use log::{debug, error, info, set_boxed_logger, set_max_level, warn, LevelFilter};
 use std::sync::{Mutex, Once};
+use syslog::{BasicLogger, Facility, Formatter3164};
 
 #[cfg(test)]
 mod tests_log_messages {
@@ -22,8 +23,8 @@ mod tests_log_messages {
 
             logger.add_logger(Box::new(logger1));
 
-            let console_logger = ConsoleLogger;
-            logger.add_logger(Box::new(console_logger));
+            let logger2 = ConsoleLogger;
+            logger.add_logger(Box::new(logger2));
 
             let multi_logger = LOGGER.lock().unwrap().take().unwrap_or(logger);
 
@@ -44,7 +45,7 @@ mod tests_log_messages {
         let result = log_error_message("This is an error message");
         assert_eq!(result, Err("ERROR: This is an error message".to_string()));
         if let Err(err) = result {
-            error!("Failed to execute query: {}", err);
+            error!("Failed to execute: {}", err);
         }
     }
 
@@ -60,5 +61,32 @@ mod tests_log_messages {
         info!("This is an info message");
         warn!("This is a warning message");
         error!("This is an error message");
+    }
+
+    #[test]
+    #[ignore] // Run individually and in a Unix-like environment
+    fn test_log_to_syslog() {
+        let formatter = Formatter3164 {
+            facility: Facility::LOG_USER,
+            hostname: None,
+            process: "syslog_rust".into(),
+            pid: 0,
+        };
+
+        let logger = match syslog::unix(formatter) {
+            Err(e) => {
+                println!("impossible to connect to syslog: {:?}", e);
+                return;
+            }
+            Ok(logger) => logger,
+        };
+
+        set_boxed_logger(Box::new(BasicLogger::new(logger)))
+            .map(|()| set_max_level(LevelFilter::Debug))
+            .unwrap();
+
+        info!("hello world");
+        debug!("This is a syslog debug");
+        error!("This is a syslog error!");
     }
 }
