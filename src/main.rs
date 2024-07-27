@@ -277,4 +277,9 @@ fn main() {
     let format = "%Y-%m-%d %H:%M:%S";
     let result = parse_string_to_datetime(datetime_string, format).unwrap();
     println!("{:?}", result);
+    // Log levels
+    log::warn!("[foo] warn");
+    log::info!("[foo] info");
+    log::debug!("[foo] debug");
+    foo::run();
 }
