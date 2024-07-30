@@ -1,5 +1,5 @@
 use chrono::Local;
-use development_tools::foo;
+use development_tools::{foo, log_to_file};
 use env_logger::Builder;
 use log::{debug, error, info, warn, LevelFilter};
 use std::{env, io::Write, sync::Once};
@@ -44,5 +44,13 @@ mod tests_configure_logging {
         info!("informational message");
         warn!("warning message");
         error!("this is an error {}", "message");
+    }
+
+    #[test]
+    #[ignore] // Ignored because it writes to a file, run individually
+    fn test_log_to_file() {
+        let result = log_to_file();
+        info!("Hello, world!");
+        assert!(result.is_ok());
     }
 }
