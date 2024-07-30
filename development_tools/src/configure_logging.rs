@@ -1,16 +1,22 @@
+use log::{debug, info, warn};
+
 pub mod foo {
+    use super::*;
+
     pub mod bar {
+        use super::*;
+
         pub fn run() {
-            log::warn!("[bar] warn");
-            log::info!("[bar] info");
-            log::debug!("[bar] debug");
+            warn!("[bar] warn");
+            info!("[bar] info");
+            debug!("[bar] debug");
         }
     }
 
     pub fn run() {
-        log::warn!("[foo] warn");
-        log::info!("[foo] info");
-        log::debug!("[foo] debug");
+        warn!("[foo] warn");
+        info!("[foo] info");
+        debug!("[foo] debug");
         bar::run();
     }
 }
