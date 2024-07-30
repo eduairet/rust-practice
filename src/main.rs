@@ -282,4 +282,8 @@ fn main() {
     log::info!("[foo] info");
     log::debug!("[foo] debug");
     foo::run();
+    // Versioning
+    let version = "1.2.3";
+    let result = parse_and_increment_version(version);
+    println!("Version: {}", result);
 }
