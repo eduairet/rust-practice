@@ -283,7 +283,7 @@ fn main() {
     log::debug!("[foo] debug");
     foo::run();
     // Versioning
-    let version = "1.2.3";
-    let result = parse_and_increment_version(version);
-    println!("Version: {}", result);
+    let max_version =
+        find_max_matching_version("<= 1.0.0", vec!["0.9.0", "1.0.0", "1.0.1"]).unwrap();
+    println!("Max version: {:?}", max_version);
 }
