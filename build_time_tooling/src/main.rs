@@ -20,6 +20,7 @@ fn prompt(s: &str) -> Result<String> {
 extern "C" {
     fn hello();
     fn greet(name: *const c_char);
+    fn multiply(x: i32, y: i32) -> i32;
 }
 
 fn main() -> Result<()> {
@@ -27,5 +28,8 @@ fn main() -> Result<()> {
     let name = prompt("What's your name? ")?;
     let c_name = CString::new(name)?;
     unsafe { greet(c_name.as_ptr()) }
+    unsafe {
+        println!("{}", multiply(5, 7));
+    }
     Ok(())
 }
