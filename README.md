@@ -28,6 +28,8 @@ Rust exercises by Eduardo Aire Torres.
    2. [Configure Logging](./development_tools/src/configure_logging.rs)
    3. [Versioning](./development_tools/src/versioning.rs)
    4. [Build Time Tooling](./build_time_tooling/)
+10. [Encoding](./encoding/)
+    1. [Character Sets](./encoding/src/character_sets.rs)
 
 ### References
 
