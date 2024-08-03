@@ -1,3 +1,4 @@
+use data_encoding::HEXUPPER;
 use encoding::{percent_decode_string, percent_encode_string};
 use url::form_urlencoded::{byte_serialize, parse};
 
@@ -33,5 +34,19 @@ mod tests_character_sets {
             .collect();
         print!("decoded: {:?}\n", decoded);
         assert_eq!(decoded, input);
+    }
+
+    #[test]
+    fn test_encode_decode_hex() {
+        let original = b"Hamburgerfontsiv";
+        let expected = "48616D627572676572666F6E74736976";
+
+        let encoded = HEXUPPER.encode(original);
+        print!("encoded: {}\n", encoded);
+        assert_eq!(encoded, expected);
+
+        let decoded = HEXUPPER.decode(encoded.as_bytes()).unwrap();
+        print!("decoded: {:?}\n", decoded);
+        assert_eq!(decoded, original);
     }
 }
