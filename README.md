@@ -30,6 +30,7 @@ Rust exercises by Eduardo Aire Torres.
    4. [Build Time Tooling](./build_time_tooling/)
 10. [Encoding](./encoding/)
     1. [Character Sets](./encoding/src/character_sets.rs)
+    2. [CSV processing](./encoding/src/csv_processing.rs)
 
 ### References
 
