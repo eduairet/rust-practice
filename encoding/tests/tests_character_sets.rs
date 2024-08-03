@@ -1,3 +1,4 @@
+use base64::{engine::general_purpose, Engine as _};
 use data_encoding::HEXUPPER;
 use encoding::{percent_decode_string, percent_encode_string};
 use url::form_urlencoded::{byte_serialize, parse};
@@ -46,6 +47,20 @@ mod tests_character_sets {
         assert_eq!(encoded, expected);
 
         let decoded = HEXUPPER.decode(encoded.as_bytes()).unwrap();
+        print!("decoded: {:?}\n", decoded);
+        assert_eq!(decoded, original);
+    }
+
+    #[test]
+    fn test_encode_decode_base64() {
+        let original = b"Hamburgerfontsiv";
+        let expected = "SGFtYnVyZ2VyZm9udHNpdg==";
+
+        let b64 = general_purpose::STANDARD.encode(original);
+        print!("base64: {}\n", b64);
+        assert_eq!(b64, expected);
+
+        let decoded = general_purpose::STANDARD.decode(b64.as_bytes()).unwrap();
         print!("decoded: {:?}\n", decoded);
         assert_eq!(decoded, original);
     }
