@@ -1,4 +1,4 @@
-use encoding::{read_csv_records, Token};
+use encoding::{read_csv_records, read_csv_records_custom_delimiter, Token};
 
 #[cfg(test)]
 mod tests_csv_processing {
@@ -36,5 +36,13 @@ mod tests_csv_processing {
         assert_eq!(bitcoin.name, "BTC");
         assert_eq!(bitcoin.ticker, "Bitcoin");
         assert_eq!(bitcoin.price, 60000.0);
+    }
+
+    #[test]
+    fn test_read_csv_records_custom_delimiter() {
+        let csv_data = "name;age\nAlice;30\nBob;25\n";
+        let records = read_csv_records_custom_delimiter(csv_data, b';').unwrap();
+        print!("{:?}", records);
+        assert_eq!(records, vec!["Alice30", "Bob25"]);
     }
 }
