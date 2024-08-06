@@ -1,4 +1,7 @@
-use encoding::{read_csv_records, read_csv_records_custom_delimiter, Token};
+use encoding::{
+    filter_csv_records_matching_predicate, read_csv_records, read_csv_records_custom_delimiter,
+    Token,
+};
 
 #[cfg(test)]
 mod tests_csv_processing {
@@ -44,5 +47,14 @@ mod tests_csv_processing {
         let records = read_csv_records_custom_delimiter(csv_data, b';').unwrap();
         print!("{:?}", records);
         assert_eq!(records, vec!["Alice30", "Bob25"]);
+    }
+
+    #[test]
+    fn test_filter_csv_records_matching_predicate() {
+        let csv_data = "name,age\nAlice,30\nBob,25\n";
+        let query = "Alice";
+        let filtered_records = filter_csv_records_matching_predicate(csv_data, query);
+        print!("{:?}", filtered_records);
+        assert_eq!(filtered_records, vec!["Alice30"]);
     }
 }

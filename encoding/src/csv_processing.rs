@@ -105,3 +105,45 @@ pub fn read_csv_records_custom_delimiter(
 
     Ok(records)
 }
+
+/// Filter CSV records that match a predicate.
+///
+/// # Arguments
+///
+/// * `csv_data` - A string slice that holds the CSV data.
+/// * `query` - A string slice that holds the query to filter the records.
+///
+/// # Returns
+///
+/// A vector of strings, where each string is a record from the CSV data that matches the query.
+///
+/// # Example
+///
+/// ```
+/// use encoding::filter_csv_records_matching_predicate;
+///
+/// let csv_data = "name,age\nAlice,30\nBob,25\n";
+/// let query = "Alice";
+///
+/// let filtered_records = filter_csv_records_matching_predicate(csv_data, query);
+///
+/// assert_eq!(filtered_records, vec!["Alice30"]);
+/// ```
+pub fn filter_csv_records_matching_predicate(csv_data: &str, query: &str) -> Vec<String> {
+    let mut reader = ReaderBuilder::new().from_reader(csv_data.as_bytes());
+    let mut filtered_records: Vec<String> = Vec::new();
+
+    for result in reader.records() {
+        let record = result.unwrap();
+        let record_str = record
+            .iter()
+            .map(|field| field.to_string())
+            .collect::<String>();
+
+        if record_str.contains(query) {
+            filtered_records.push(record_str);
+        }
+    }
+
+    filtered_records
+}
