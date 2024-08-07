@@ -1,6 +1,6 @@
 use encoding::{
     filter_csv_records_matching_predicate, read_csv_records, read_csv_records_custom_delimiter,
-    Steak, Token,
+    MemeCoin, Steak, Token,
 };
 use std::io::stdout;
 
@@ -97,6 +97,30 @@ mod tests_csv_processing {
 
         writter.serialize(("Alice", 30)).unwrap();
         writter.serialize(("Bob", 25)).unwrap();
+
+        writter.flush().unwrap();
+
+        assert!(true);
+    }
+
+    #[test]
+    fn test_serialize_records_to_csv_serde() {
+        let mut writter = csv::Writer::from_writer(stdout());
+
+        let pepe = MemeCoin {
+            chain: "Ethereum",
+            name: "Pepe",
+            ticker: "PEPE",
+        };
+
+        let wif = MemeCoin {
+            chain: "Solana",
+            name: "Dog Wif Hat",
+            ticker: "WIF",
+        };
+
+        writter.serialize(pepe).unwrap();
+        writter.serialize(wif).unwrap();
 
         writter.flush().unwrap();
 

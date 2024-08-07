@@ -1,5 +1,5 @@
 use csv::{Error, ReaderBuilder};
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 /// Read CSV records from a string.
 ///
@@ -169,4 +169,26 @@ pub struct Steak {
     pub price: f64,
     #[serde(deserialize_with = "csv::invalid_option")]
     pub id: Option<u64>,
+}
+
+/// Serializable struct that represents a meme coin.
+///
+/// # Example
+///
+/// ```
+/// use encoding::MemeCoin;
+///
+/// let meme_coin = MemeCoin {
+///    chain: "Ethereum",
+///    name: "Pepe",
+///    ticker: "PEPE"
+/// };
+///
+/// assert_eq!(meme_coin.chain, "Ethereum");
+/// ```
+#[derive(Debug, Serialize)]
+pub struct MemeCoin<'a> {
+    pub chain: &'a str,
+    pub name: &'a str,
+    pub ticker: &'a str,
 }
