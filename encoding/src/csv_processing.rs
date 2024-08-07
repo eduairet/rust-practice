@@ -147,3 +147,26 @@ pub fn filter_csv_records_matching_predicate(csv_data: &str, query: &str) -> Vec
 
     filtered_records
 }
+
+/// A struct that represents a steak record in a CSV file.
+///
+/// # Example
+///
+/// ```
+/// use encoding::Steak;
+///
+/// let steak = Steak {
+///    name: "T-bone".to_string(),
+///    price: 20.0,
+///    id: Some(1),
+/// };
+///
+/// assert_eq!(steak.name, "T-bone");
+/// ```
+#[derive(Debug, Deserialize)]
+pub struct Steak {
+    pub name: String,
+    pub price: f64,
+    #[serde(deserialize_with = "csv::invalid_option")]
+    pub id: Option<u64>,
+}
