@@ -1,6 +1,7 @@
+use csv::{Reader, Writer};
 use encoding::{
     filter_csv_records_matching_predicate, read_csv_records, read_csv_records_custom_delimiter,
-    MemeCoin, Steak, Token,
+    MemeCoin, Row, Steak, Token,
 };
 use std::io::stdout;
 
@@ -125,5 +126,26 @@ mod tests_csv_processing {
         writter.flush().unwrap();
 
         assert!(true);
+    }
+
+    #[test]
+    fn test_transform_csv_column() {
+        let csv_data =
+            "color_name,color\nRed,\"255,0,0\"\nGreen,\"0,255,0\"\nBlue,\"0,0,255\"\n".to_owned();
+        let mut out = Writer::from_writer(vec![]);
+        let mut reader = Reader::from_reader(csv_data.as_bytes());
+        for result in reader.deserialize::<Row>() {
+            let res = result.unwrap();
+            out.serialize((
+                res.color_name,
+                res.color.red,
+                res.color.green,
+                res.color.blue,
+            ))
+            .unwrap();
+        }
+        let written = String::from_utf8(out.into_inner().unwrap()).unwrap();
+        print!("{:?}", written);
+        assert_eq!(Some("Blue,0,0,255"), written.lines().last(),);
     }
 }

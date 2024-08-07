@@ -1,5 +1,6 @@
 use csv::{Error, ReaderBuilder};
-use serde::{Deserialize, Serialize};
+use serde::{de, Deserialize, Deserializer, Serialize};
+use std::str::FromStr;
 
 /// Read CSV records from a string.
 ///
@@ -191,4 +192,73 @@ pub struct MemeCoin<'a> {
     pub chain: &'a str,
     pub name: &'a str,
     pub ticker: &'a str,
+}
+
+/// A RGB color struct.
+///
+/// # Example
+///
+/// ```
+/// use encoding::RgbColor;
+///
+/// let color = RgbColor {
+///   red: 255,
+///   green: 0,
+///   blue: 0,
+/// };
+///
+/// assert_eq!(color.red, 255);
+/// ```
+#[derive(Debug)]
+pub struct RgbColor {
+    pub red: u8,
+    pub green: u8,
+    pub blue: u8,
+}
+
+/// A struct that represents a row in a CSV file.
+///
+/// # Example
+///
+/// ```
+/// use encoding::{Row, RgbColor};
+///
+/// let row = Row {
+///   color_name: "Red".to_string(),
+///   color: RgbColor {
+///     red: 255,
+///     green: 0,
+///     blue: 0,
+///   }
+/// };
+///
+/// assert_eq!(row.color_name, "Red");
+/// ```
+#[derive(Debug, Deserialize)]
+pub struct Row {
+    pub color_name: String,
+    pub color: RgbColor,
+}
+
+impl FromStr for RgbColor {
+    type Err = Error;
+
+    fn from_str(color_name: &str) -> std::result::Result<Self, Self::Err> {
+        let color = color_name.split(',').collect::<Vec<&str>>();
+        Ok(RgbColor {
+            red: color[0].parse().unwrap(),
+            green: color[1].parse().unwrap(),
+            blue: color[2].parse().unwrap(),
+        })
+    }
+}
+
+impl<'de> Deserialize<'de> for RgbColor {
+    fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let s = String::deserialize(deserializer)?;
+        FromStr::from_str(&s).map_err(de::Error::custom)
+    }
 }
