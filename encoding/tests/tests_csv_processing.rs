@@ -2,6 +2,7 @@ use encoding::{
     filter_csv_records_matching_predicate, read_csv_records, read_csv_records_custom_delimiter,
     Steak, Token,
 };
+use std::io::stdout;
 
 #[cfg(test)]
 mod tests_csv_processing {
@@ -87,5 +88,18 @@ mod tests_csv_processing {
         assert_eq!(result[1].name, "Unknown");
         assert_eq!(result[1].price, 0.0);
         assert_eq!(result[1].id, Option::None);
+    }
+
+    #[test]
+    fn test_serialize_records_to_csv() {
+        let mut writter = csv::Writer::from_writer(stdout());
+        writter.write_record(&["name", "age"]).unwrap();
+
+        writter.serialize(("Alice", 30)).unwrap();
+        writter.serialize(("Bob", 25)).unwrap();
+
+        writter.flush().unwrap();
+
+        assert!(true);
     }
 }
