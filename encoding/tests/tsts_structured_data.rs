@@ -1,4 +1,4 @@
-use encoding::Config;
+use encoding::{decode_little_endian, encode_little_endian, Config, Payload};
 use serde_json::{json, Value as JsonValue};
 use toml::Value as TomlValue;
 
@@ -72,5 +72,16 @@ mod tests_structured_data {
             vec!["Eduardo Aire <eat@beef.pnk>"]
         );
         assert_eq!(package_info.dependencies["serde"], "1.0");
+    }
+
+    #[test]
+    fn read_write_integers_in_little_endian_byte_order() {
+        let original_payload = Payload::default();
+        let encoded_bytes = encode_little_endian(&original_payload).unwrap();
+        let decoded_payload = decode_little_endian(&encoded_bytes).unwrap();
+        print!("Original payload: {:?}\n", original_payload);
+        print!("Encoded bytes: {:?}\n", encoded_bytes);
+        print!("Decoded payload: {:?}\n", decoded_payload);
+        assert_eq!(original_payload, decoded_payload);
     }
 }
