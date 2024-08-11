@@ -32,6 +32,7 @@ Rust exercises by Eduardo Aire Torres.
     1. [Character Sets](./encoding/src/character_sets.rs)
     2. [CSV processing](./encoding/src/csv_processing.rs)
     3. [Structured Data](./encoding/src/structured_data.rs)
+11. [Error Handling](./error_handling/src/error_handling.rs)
 
 ### References
 

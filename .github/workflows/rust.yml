@@ -27,5 +27,6 @@ jobs:
           cargo test -p date_time --verbose -- --show-output
           cargo test -p development_tools --verbose -- --show-output
           cargo test -p encoding --verbose -- --show-output
+          cargo test -p error_handling --verbose -- --show-output
           cargo test -p shared --verbose -- --show-output
           cargo test -p threads --verbose -- --show-output
