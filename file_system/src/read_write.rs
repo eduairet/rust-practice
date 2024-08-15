@@ -135,11 +135,11 @@ pub fn avoid_writing_reading_same_file(
 pub fn access_file_randomly_using_memory_map(
     file_path: &str,
     indexes: &[usize],
-) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
+) -> Result<(Vec<u8>, Mmap), Box<dyn std::error::Error>> {
     let file = File::open(file_path).unwrap();
     let map = unsafe { Mmap::map(&file)? };
 
     let random_bytes: Vec<u8> = indexes.iter().map(|&index| map[index]).collect();
 
-    Ok(random_bytes)
+    Ok((random_bytes, map))
 }

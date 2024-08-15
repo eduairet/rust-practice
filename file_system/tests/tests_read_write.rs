@@ -50,8 +50,10 @@ mod tests_read_write {
     fn test_access_file_randomly_using_memory_map() {
         let file_path = "tests/test_memory_map.txt";
         let indexes = vec![0, 1, 2, 19];
-        let lines = access_file_randomly_using_memory_map(file_path, &indexes).unwrap();
+        let (lines, map) = access_file_randomly_using_memory_map(file_path, &indexes).unwrap();
         println!("{:?}", lines);
+        println!("{:?}", &map[..]);
         assert_eq!(lines, vec![84, 45, 66, 98]);
+        assert_eq!(&map[..6], b"T-Bone");
     }
 }
