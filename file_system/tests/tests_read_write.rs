@@ -1,4 +1,7 @@
-use file_system::{avoid_writing_reading_same_file, read_file_lines, write_to_file};
+use file_system::{
+    access_file_randomly_using_memory_map, avoid_writing_reading_same_file, read_file_lines,
+    write_to_file,
+};
 use std::{
     fs::{remove_file, File},
     path::Path,
@@ -41,5 +44,14 @@ mod tests_read_write {
 
         remove_file(file_path).unwrap();
         assert!(!Path::new(file_path).exists());
+    }
+
+    #[test]
+    fn test_access_file_randomly_using_memory_map() {
+        let file_path = "tests/test_memory_map.txt";
+        let indexes = vec![0, 1, 2, 19];
+        let lines = access_file_randomly_using_memory_map(file_path, &indexes).unwrap();
+        println!("{:?}", lines);
+        assert_eq!(lines, vec![84, 45, 66, 98]);
     }
 }

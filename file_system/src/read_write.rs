@@ -1,3 +1,4 @@
+use memmap::Mmap;
 use same_file::Handle;
 use std::{
     fs::File,
@@ -108,4 +109,37 @@ pub fn avoid_writing_reading_same_file(
         write!(file, "{}", content).unwrap();
         Ok(read_file_lines(file_path))
     }
+}
+
+/// Accesses a file randomly using memory map
+///
+/// # Arguments
+///
+/// * `file_path` - A string slice that holds the path to the file
+/// * `indexes` - A slice of unsigned integers that holds the indexes to access the file
+///
+/// # Returns
+///
+/// A vector of unsigned integers that holds the bytes of the file
+///
+/// # Examples
+///
+/// ```
+/// use file_system::access_file_randomly_using_memory_map;
+///
+/// let file_path = "tests/test_memory_map.txt";
+/// let indexes = vec![0, 1, 2, 19];
+/// let lines = access_file_randomly_using_memory_map(file_path, &indexes);
+/// assert!(lines.is_ok());
+/// ```
+pub fn access_file_randomly_using_memory_map(
+    file_path: &str,
+    indexes: &[usize],
+) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
+    let file = File::open(file_path).unwrap();
+    let map = unsafe { Mmap::map(&file)? };
+
+    let random_bytes: Vec<u8> = indexes.iter().map(|&index| map[index]).collect();
+
+    Ok(random_bytes)
 }
