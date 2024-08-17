@@ -35,6 +35,7 @@ Rust exercises by Eduardo Aire Torres.
 11. [Error Handling](./error_handling/src/error_handling.rs)
 12. [File System](./file_system/)
     1. [Read & Write](./file_system/src/read_write.rs)
+    2. [Directory Traversal](./file_system/src/directory_traversal.rs)
 
 ### References
 

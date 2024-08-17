@@ -6,3 +6,4 @@ edition = "2021"
 [dependencies]
 memmap = "0.7.0"
 same-file = "1.0.6"
+walkdir = "2.5.0"

@@ -1,4 +1,7 @@
-use file_system::{find_loops_for_given_path, search_modified_files_in_current_dir};
+use file_system::{
+    find_loops_for_given_path, recursively_find_duplicate_file_names,
+    search_modified_files_in_current_dir,
+};
 use std::path::PathBuf;
 
 #[cfg(test)]
@@ -27,5 +30,13 @@ mod tests_directory_traversal {
                 PathBuf::from("/tmp/foo/bar/baz/qux")
             ))
         );
+    }
+
+    #[test]
+    fn test_recursively_find_duplicate_file_names() {
+        let path = ".";
+        let duplicates = recursively_find_duplicate_file_names(path).unwrap();
+        println!("{:?}", duplicates);
+        assert!(!duplicates);
     }
 }

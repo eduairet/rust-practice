@@ -1,11 +1,13 @@
 use same_file::is_same_file;
 use std::{
+    collections::HashMap,
     env::current_dir,
     error::Error,
     fs::{metadata, read_dir},
     io::Result as IoResult,
     path::{Path, PathBuf},
 };
+use walkdir::WalkDir;
 
 /// Searches for files that were modified within the last `hours_back` hours
 ///
@@ -59,21 +61,21 @@ pub fn search_modified_files_in_current_dir(
 }
 
 /// Finds loops in a given path
-/// 
+///
 /// # Arguments
-/// 
+///
 /// * `path` - A path to search for loops
-/// 
+///
 /// # Returns
-/// 
+///
 /// A tuple of two paths that form a loop
-/// 
+///
 /// # Examples
-/// 
+///
 /// ```ignore
 /// use file_system::find_loops_for_given_path;
 /// use std::path::PathBuf;
-/// 
+///
 /// let path = "/tmp/foo/bar/baz/qux/bar/baz";
 /// let loops = find_loops_for_given_path(path).unwrap();
 /// println!("{:?}", loops);
@@ -96,4 +98,47 @@ pub fn find_loops_for_given_path<P: AsRef<Path>>(path: P) -> IoResult<Option<(Pa
         }
     }
     return Ok(None);
+}
+
+/// Recursively finds duplicate file names in a given path
+///
+/// # Arguments
+///
+/// * `path` - A path to search for duplicate file names
+///
+/// # Returns
+///
+/// A boolean value that indicates if duplicate file names were found
+///
+/// # Examples
+///
+/// ```
+/// use file_system::recursively_find_duplicate_file_names;
+///
+/// let path = ".";
+///
+/// let duplicates = recursively_find_duplicate_file_names(path).unwrap();
+///
+/// println!("{:?}", duplicates);
+///
+/// assert!(!duplicates);
+/// ```
+pub fn recursively_find_duplicate_file_names(path: &str) -> Result<bool, Box<dyn Error>> {
+    let mut filenames = HashMap::new();
+
+    for entry in WalkDir::new(path)
+        .into_iter()
+        .filter_map(Result::ok)
+        .filter(|e| !e.file_type().is_dir())
+    {
+        let f_name = String::from(entry.file_name().to_string_lossy());
+        let counter = filenames.entry(f_name.clone()).or_insert(0);
+        *counter += 1;
+
+        if *counter == 2 {
+            return Ok(true);
+        }
+    }
+
+    Ok(false)
 }
