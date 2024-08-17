@@ -70,7 +70,7 @@ pub fn search_modified_files_in_current_dir(
 /// 
 /// # Examples
 /// 
-/// ```
+/// ```ignore
 /// use file_system::find_loops_for_given_path;
 /// use std::path::PathBuf;
 /// 

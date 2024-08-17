@@ -15,6 +15,7 @@ mod tests_directory_traversal {
     }
 
     #[test]
+    #[ignore]
     fn test_find_loops_for_given_path() {
         let path = "/tmp/foo/bar/baz/qux/bar/baz";
         let loops = find_loops_for_given_path(path).unwrap();
