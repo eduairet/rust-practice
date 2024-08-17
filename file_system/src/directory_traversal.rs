@@ -1,7 +1,10 @@
+use same_file::is_same_file;
 use std::{
     env::current_dir,
     error::Error,
     fs::{metadata, read_dir},
+    io::Result as IoResult,
+    path::{Path, PathBuf},
 };
 
 /// Searches for files that were modified within the last `hours_back` hours
@@ -53,4 +56,44 @@ pub fn search_modified_files_in_current_dir(
     }
 
     Ok(modified_files)
+}
+
+/// Finds loops in a given path
+/// 
+/// # Arguments
+/// 
+/// * `path` - A path to search for loops
+/// 
+/// # Returns
+/// 
+/// A tuple of two paths that form a loop
+/// 
+/// # Examples
+/// 
+/// ```
+/// use file_system::find_loops_for_given_path;
+/// use std::path::PathBuf;
+/// 
+/// let path = "/tmp/foo/bar/baz/qux/bar/baz";
+/// let loops = find_loops_for_given_path(path).unwrap();
+/// println!("{:?}", loops);
+/// assert_eq!(
+///    loops,
+///    Some((
+///       PathBuf::from("/tmp/foo"),
+///       PathBuf::from("/tmp/foo/bar/baz/qux")
+///    ))
+/// );
+/// ```
+pub fn find_loops_for_given_path<P: AsRef<Path>>(path: P) -> IoResult<Option<(PathBuf, PathBuf)>> {
+    let path = path.as_ref();
+    let mut path_buf = path.to_path_buf();
+    while path_buf.pop() {
+        if is_same_file(&path_buf, path)? {
+            return Ok(Some((path_buf, path.to_path_buf())));
+        } else if let Some(looped_paths) = find_loops_for_given_path(&path_buf)? {
+            return Ok(Some(looped_paths));
+        }
+    }
+    return Ok(None);
 }
