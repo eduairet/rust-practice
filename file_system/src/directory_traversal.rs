@@ -142,3 +142,48 @@ pub fn recursively_find_duplicate_file_names(path: &str) -> Result<bool, Box<dyn
 
     Ok(false)
 }
+
+/// Recursively finds all files with a given predicate in a given path
+///
+/// # Arguments
+///
+/// * `path` - A path to search for files
+/// * `predicate` - A predicate to filter files
+///
+/// # Returns
+///
+/// A vector of strings that holds the files that satisfy the predicate
+///
+/// # Examples
+///
+/// ```
+/// use file_system::recursively_find_all_files_with_predicate;
+///
+/// let path = ".";
+/// let predicate = ".toml";
+///
+/// let files = recursively_find_all_files_with_predicate(path, predicate).unwrap();
+///
+/// assert!(!files.is_empty());
+/// ```
+pub fn recursively_find_all_files_with_predicate(
+    path: &str,
+    predicate: &str,
+) -> Result<Vec<String>, Box<dyn Error>> {
+    let mut filenames = Vec::new();
+
+    for entry in WalkDir::new(path)
+        .follow_links(true)
+        .into_iter()
+        .filter_map(|e| e.ok())
+    {
+        let f_name = entry.file_name().to_string_lossy();
+        let sec = entry.metadata().unwrap().modified().unwrap();
+
+        if f_name.ends_with(predicate) && sec.elapsed().unwrap().as_secs() < 86400 {
+            filenames.push(format!("{}", f_name));
+        }
+    }
+
+    Ok(filenames)
+}
