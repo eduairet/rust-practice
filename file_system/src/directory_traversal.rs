@@ -7,7 +7,7 @@ use std::{
     io::Result as IoResult,
     path::{Path, PathBuf},
 };
-use walkdir::WalkDir;
+use walkdir::{DirEntry, WalkDir};
 
 /// Searches for files that were modified within the last `hours_back` hours
 ///
@@ -160,7 +160,7 @@ pub fn recursively_find_duplicate_file_names(path: &str) -> Result<bool, Box<dyn
 /// use file_system::recursively_find_all_files_with_predicate;
 ///
 /// let path = ".";
-/// let predicate = ".toml";
+/// let predicate = ".rs";
 ///
 /// let files = recursively_find_all_files_with_predicate(path, predicate).unwrap();
 ///
@@ -186,4 +186,44 @@ pub fn recursively_find_all_files_with_predicate(
     }
 
     Ok(filenames)
+}
+
+/// Traverses directories skipping dotfiles
+///
+/// # Arguments
+///
+/// * `path` - A path to traverse
+///
+/// # Returns
+///
+/// A vector of DirEntry that holds the files
+///
+/// # Examples
+///
+/// ```
+/// use file_system::traverse_directories_skipping_dotfiles;
+///
+/// let path = ".";
+/// let files = traverse_directories_skipping_dotfiles(path).unwrap();
+///
+/// assert!(!files
+///    .iter()
+///    .any(|file| file.file_name().to_str().unwrap() == ".env"));
+/// ```
+pub fn traverse_directories_skipping_dotfiles(
+    path: &str,
+) -> Result<Vec<walkdir::DirEntry>, Box<dyn Error>> {
+    pub fn is_not_hidden(entry: &DirEntry) -> bool {
+        entry
+            .file_name()
+            .to_str()
+            .map(|s| entry.depth() == 0 || !s.starts_with("."))
+            .unwrap_or(false)
+    }
+    let walker = WalkDir::new(path).into_iter();
+    let files: Vec<_> = walker
+        .filter_map(Result::ok)
+        .filter(|e| is_not_hidden(e))
+        .collect();
+    Ok(files)
 }

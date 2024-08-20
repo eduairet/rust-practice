@@ -1,6 +1,7 @@
 use file_system::{
     find_loops_for_given_path, recursively_find_all_files_with_predicate,
     recursively_find_duplicate_file_names, search_modified_files_in_current_dir,
+    traverse_directories_skipping_dotfiles,
 };
 use std::path::PathBuf;
 
@@ -43,9 +44,22 @@ mod tests_directory_traversal {
     #[test]
     fn test_recursively_find_all_files_with_predicate() {
         let path = ".";
-        let predicate = ".toml";
+        let predicate = ".rs";
         let files = recursively_find_all_files_with_predicate(path, predicate).unwrap();
         println!("{:?}", files);
-        assert_eq!(files, ["Cargo.toml"]);
+        assert!(files.contains(&"tests_directory_traversal.rs".to_string()));
+    }
+
+    #[test]
+    fn test_traverse_directories_skipping_dotfiles() {
+        let path = ".";
+        let files = traverse_directories_skipping_dotfiles(path).unwrap();
+        println!("{:?}", files);
+        assert!(!files
+            .iter()
+            .any(|file| file.file_name().to_str().unwrap() == ".env"));
+        assert!(files
+            .iter()
+            .any(|file| file.file_name().to_str().unwrap() == "Cargo.toml"));
     }
 }
