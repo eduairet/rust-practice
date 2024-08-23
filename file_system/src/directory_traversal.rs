@@ -1,4 +1,4 @@
-use glob::glob;
+use glob::{glob, glob_with, MatchOptions};
 use same_file::is_same_file;
 use std::{
     collections::HashMap,
@@ -295,6 +295,48 @@ pub fn find_all_files_recursively(pattern: &str) -> Result<Vec<String>, Box<dyn 
     let mut files = Vec::new();
 
     for entry in glob(pattern).unwrap() {
+        match entry {
+            Ok(path) => {
+                files.push(path.display().to_string());
+            }
+            Err(e) => eprintln!("{:?}", e),
+        }
+    }
+
+    Ok(files)
+}
+
+/// Recursively finds all files in a given path ignoring case
+///
+/// # Arguments
+///
+/// * `pattern` - A pattern to search for files
+///
+/// # Returns
+///
+/// A vector of strings that holds the files
+///
+/// # Examples
+///
+/// ```
+/// use file_system::find_all_files_recursively_ignoring_case;
+///
+/// let pattern = "**/*.RS";
+/// let files = find_all_files_recursively_ignoring_case(pattern).unwrap();
+///
+/// assert!(files.contains(&"tests/tests_directory_traversal.rs".to_string()));
+/// ```
+pub fn find_all_files_recursively_ignoring_case(
+    pattern: &str,
+) -> Result<Vec<String>, Box<dyn Error>> {
+    let options = MatchOptions {
+        case_sensitive: false,
+        ..Default::default()
+    };
+
+    let mut files = Vec::new();
+
+    for entry in glob_with(pattern, options).unwrap() {
         match entry {
             Ok(path) => {
                 files.push(path.display().to_string());
