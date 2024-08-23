@@ -227,3 +227,45 @@ pub fn traverse_directories_skipping_dotfiles(
         .collect();
     Ok(files)
 }
+
+/// Recursively calculates file sizes at a given depth
+///
+/// # Arguments
+///
+/// * `path` - A path to calculate file sizes
+/// * `min_depth` - An unsigned 64-bit integer that holds the minimum depth
+/// * `max_depth` - An unsigned 64-bit integer that holds the maximum depth
+///
+/// # Returns
+///
+/// A string that holds the total size of the files
+///
+/// # Examples
+///
+/// ```
+/// use file_system::recursively_calculate_file_sizes_at_given_depth;
+///
+/// let path = ".";
+/// let min_depth = 1;
+/// let max_depth = 2;
+///
+/// let file_sizes = recursively_calculate_file_sizes_at_given_depth(path, min_depth, max_depth);
+///
+/// assert!(file_sizes.len() > 0);
+/// ```
+pub fn recursively_calculate_file_sizes_at_given_depth(
+    path: &str,
+    min_depth: usize,
+    max_depth: usize,
+) -> String {
+    let total_size = WalkDir::new(path)
+        .min_depth(min_depth)
+        .max_depth(max_depth)
+        .into_iter()
+        .filter_map(|entry| entry.ok())
+        .filter_map(|entry| entry.metadata().ok())
+        .filter(|metadata| metadata.is_file())
+        .fold(0, |acc, m| acc + m.len());
+
+    format!("Total size: {} bytes.", total_size)
+}

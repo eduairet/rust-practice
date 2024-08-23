@@ -1,7 +1,7 @@
 use file_system::{
-    find_loops_for_given_path, recursively_find_all_files_with_predicate,
-    recursively_find_duplicate_file_names, search_modified_files_in_current_dir,
-    traverse_directories_skipping_dotfiles,
+    find_loops_for_given_path, recursively_calculate_file_sizes_at_given_depth,
+    recursively_find_all_files_with_predicate, recursively_find_duplicate_file_names,
+    search_modified_files_in_current_dir, traverse_directories_skipping_dotfiles,
 };
 use std::path::PathBuf;
 
@@ -61,5 +61,16 @@ mod tests_directory_traversal {
         assert!(files
             .iter()
             .any(|file| file.file_name().to_str().unwrap() == "Cargo.toml"));
+    }
+
+    #[test]
+    fn test_recursively_calculate_file_sizes_at_given_depth() {
+        let path = ".";
+        let min_depth = 1;
+        let max_depth = 2;
+        let file_sizes =
+            recursively_calculate_file_sizes_at_given_depth(path, min_depth, max_depth);
+        println!("{:?}", file_sizes);
+        assert!(file_sizes.len() > 0);
     }
 }
