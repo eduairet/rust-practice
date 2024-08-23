@@ -1,3 +1,4 @@
+use glob::glob;
 use same_file::is_same_file;
 use std::{
     collections::HashMap,
@@ -268,4 +269,39 @@ pub fn recursively_calculate_file_sizes_at_given_depth(
         .fold(0, |acc, m| acc + m.len());
 
     format!("Total size: {} bytes.", total_size)
+}
+
+/// Recursively finds all files in a given path
+///
+/// # Arguments
+///
+/// * `pattern` - A pattern to search for files
+///
+/// # Returns
+///
+/// A vector of strings that holds the files
+///
+/// # Examples
+///
+/// ```
+/// use file_system::find_all_files_recursively;
+///
+/// let pattern = "**/*.rs";
+/// let files = find_all_files_recursively(pattern).unwrap();
+///
+/// assert!(files.contains(&"tests/tests_directory_traversal.rs".to_string()));
+/// ```
+pub fn find_all_files_recursively(pattern: &str) -> Result<Vec<String>, Box<dyn Error>> {
+    let mut files = Vec::new();
+
+    for entry in glob(pattern).unwrap() {
+        match entry {
+            Ok(path) => {
+                files.push(path.display().to_string());
+            }
+            Err(e) => eprintln!("{:?}", e),
+        }
+    }
+
+    Ok(files)
 }

@@ -1,7 +1,8 @@
 use file_system::{
-    find_loops_for_given_path, recursively_calculate_file_sizes_at_given_depth,
-    recursively_find_all_files_with_predicate, recursively_find_duplicate_file_names,
-    search_modified_files_in_current_dir, traverse_directories_skipping_dotfiles,
+    find_all_files_recursively, find_loops_for_given_path,
+    recursively_calculate_file_sizes_at_given_depth, recursively_find_all_files_with_predicate,
+    recursively_find_duplicate_file_names, search_modified_files_in_current_dir,
+    traverse_directories_skipping_dotfiles,
 };
 use std::path::PathBuf;
 
@@ -72,5 +73,13 @@ mod tests_directory_traversal {
             recursively_calculate_file_sizes_at_given_depth(path, min_depth, max_depth);
         println!("{:?}", file_sizes);
         assert!(file_sizes.len() > 0);
+    }
+
+    #[test]
+    fn test_find_all_files_recursively() {
+        let path = "**/*.png";
+        let files = find_all_files_recursively(path).unwrap();
+        println!("{:?}", files);
+        assert!(files.contains(&"src/brisket.png".to_string()));
     }
 }
