@@ -38,6 +38,8 @@ Rust exercises by Eduardo Aire Torres.
     2. [Directory Traversal](./file_system/src/directory_traversal.rs)
 13. [Hardware Support](./hardware_support/)
     1. [Processor](./hardware_support/src/processor.rs)
+14. Memory Management
+    1. [Constants](./memory_management/src/constants.rs)
 
 ### References
 
