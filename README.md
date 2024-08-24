@@ -36,6 +36,8 @@ Rust exercises by Eduardo Aire Torres.
 12. [File System](./file_system/)
     1. [Read & Write](./file_system/src/read_write.rs)
     2. [Directory Traversal](./file_system/src/directory_traversal.rs)
+13. [Hardware Support](./hardware_support/)
+    1. [Processor](./hardware_support/src/processor.rs)
 
 ### References
 
