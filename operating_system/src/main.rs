@@ -1,5 +1,6 @@
 use std::{
     collections::HashSet,
+    env, fs,
     fs::File,
     io::{BufRead, BufReader, Error, ErrorKind, Write},
     process::{Command, Stdio},
@@ -110,4 +111,11 @@ fn main() {
         .filter_map(|line| line.ok())
         .filter(|line| line.find("usb").is_some())
         .for_each(|line| println!("{}", line));
+
+    // Read Environment Variable
+
+    let config_path = env::var("CONFIG").unwrap_or("./config/.env".to_string());
+
+    let config: String = fs::read_to_string(config_path).unwrap();
+    println!("Config: {}", config);
 }

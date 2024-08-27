@@ -1,6 +1,7 @@
 ls: oops: No such file or directory
 .:
 Cargo.toml
+config
 out.txt
 src
 tests
