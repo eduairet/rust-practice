@@ -4,3 +4,4 @@ Cargo.toml
 out.txt
 src
 tests
+usb.txt

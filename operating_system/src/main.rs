@@ -1,7 +1,7 @@
 use std::{
     collections::HashSet,
     fs::File,
-    io::Write,
+    io::{BufRead, BufReader, Error, ErrorKind, Write},
     process::{Command, Stdio},
 };
 
@@ -91,4 +91,23 @@ fn main() {
         .unwrap()
         .wait_with_output()
         .unwrap();
+
+    // Continuously process child process' outputs
+
+    let stdout = Command::new("grep")
+        .args(&["-r", "usb", "."])
+        .stdout(Stdio::piped())
+        .spawn()
+        .unwrap()
+        .stdout
+        .ok_or_else(|| Error::new(ErrorKind::Other, "Could not capture standard output."))
+        .unwrap();
+
+    let reader = BufReader::new(stdout);
+
+    reader
+        .lines()
+        .filter_map(|line| line.ok())
+        .filter(|line| line.find("usb").is_some())
+        .for_each(|line| println!("{}", line));
 }
