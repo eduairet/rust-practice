@@ -1,0 +1,6 @@
+ls: oops: No such file or directory
+.:
+Cargo.toml
+out.txt
+src
+tests
