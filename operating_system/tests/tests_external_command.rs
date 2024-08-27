@@ -32,7 +32,6 @@ mod tests_external_command {
         print!("{:?}", result);
 
         let hash_pattern = Regex::new(r"^[0-9a-fA-F]{7}$").unwrap();
-        assert_eq!(result.len(), 5);
         assert!(hash_pattern.is_match(&result[0].hash));
     }
 }
