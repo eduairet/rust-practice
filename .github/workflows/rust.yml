@@ -30,5 +30,6 @@ jobs:
           cargo test -p error_handling --verbose -- --show-output
           cargo test -p file_system --verbose -- --show-output
           cargo test -p hardware_support --verbose -- --show-output
+          cargo test -p operating_system --verbose -- --show-output
           cargo test -p shared --verbose -- --show-output
           cargo test -p threads --verbose -- --show-output

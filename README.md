@@ -41,6 +41,8 @@ Rust exercises by Eduardo Aire Torres.
 14. [Memory Management](./memory_management/)
     1. [Constants](./memory_management/src/constants.rs)
 15. [Networking](./networking/)
+16. [Operating System](./operating_system/)
+    1. [External Command](./operating_system/src/external_command.rs)
 
 ### References
 

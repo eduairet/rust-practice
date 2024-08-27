@@ -105,3 +105,23 @@ pub struct Cat {
     pub name: String,
     pub color: String,
 }
+
+/// Commit struct
+///
+/// Example:
+///
+/// ```
+/// use shared::Commit;
+///
+/// let commit = Commit {
+///    hash: "1234567890abcdef".to_string(),
+///    message: "Initial commit".to_string(),
+/// };
+/// assert_eq!(commit.hash, "1234567890abcdef");
+/// assert_eq!(commit.message, "Initial commit");
+/// ```
+#[derive(PartialEq, Default, Clone, Debug)]
+pub struct Commit {
+    pub hash: String,
+    pub message: String,
+}
