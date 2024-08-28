@@ -1,5 +1,8 @@
-use ndarray::arr2;
-use science::{adding_2d_usize_matrices, multiplying_2d_usize_matrices};
+use ndarray::{arr1, arr2};
+use science::{
+    adding_2d_usize_matrices, multiply_scalar_with_vector_with_matrix,
+    multiplying_2d_usize_matrices,
+};
 
 #[cfg(test)]
 mod tests_linear_algebra {
@@ -26,5 +29,23 @@ mod tests_linear_algebra {
         print!("b: {:?}\n", b);
         print!("c: {:?}\n", c);
         assert_eq!(c, multiplying_2d_usize_matrices(&a, &b));
+    }
+
+    #[test]
+    fn test_multiply_scalar_with_vector_with_matrix() {
+        let scalar = 2;
+        let vector = arr1(&[1, 2, 3]);
+        let matrix = arr2(&[[4, 5, 6], [7, 8, 9]]);
+
+        let expected_vector = arr1(&[2, 4, 6]);
+        let expected_matrix = matrix.dot(&expected_vector);
+
+        let (new_vector, new_matrix) =
+            multiply_scalar_with_vector_with_matrix(scalar, &vector, &matrix);
+
+        println!("{}", new_vector);
+        assert_eq!(new_vector, expected_vector);
+        println!("{}", new_matrix);
+        assert_eq!(new_matrix, expected_matrix);
     }
 }
