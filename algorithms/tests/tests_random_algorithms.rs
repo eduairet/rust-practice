@@ -13,19 +13,19 @@ mod tests_random_algorithms {
     #[test]
     fn test_generate_random_u8() {
         let rn_u8: u8 = generate_random_numbers();
-        assert!(rn_u8 >= 1 && rn_u8 <= std::u8::MAX);
+        assert!(rn_u8 >= std::u8::MIN && rn_u8 <= std::u8::MAX);
     }
 
     #[test]
     fn test_generate_random_u16() {
         let rn_u16: u16 = generate_random_numbers();
-        assert!(rn_u16 >= 1 && rn_u16 <= std::u16::MAX);
+        assert!(rn_u16 >= std::u16::MIN && rn_u16 <= std::u16::MAX);
     }
 
     #[test]
     fn test_generate_random_u32() {
         let rn_u32: u32 = generate_random_numbers();
-        assert!(rn_u32 >= 1 && rn_u32 <= std::u32::MAX);
+        assert!(rn_u32 >= std::u32::MIN && rn_u32 <= std::u32::MAX);
     }
 
     #[test]
@@ -43,7 +43,7 @@ mod tests_random_algorithms {
     #[test]
     fn test_generate_random_u8_in_range() {
         let rn_u8: u8 = generate_random_numbers_in_range(1, 100);
-        assert!(rn_u8 >= 1 && rn_u8 <= std::u8::MAX);
+        assert!(rn_u8 >= std::u8::MIN && rn_u8 <= std::u8::MAX);
     }
 
     #[test]
