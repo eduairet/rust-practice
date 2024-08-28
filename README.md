@@ -43,6 +43,9 @@ Rust exercises by Eduardo Aire Torres.
 15. [Networking](./networking/)
 16. [Operating System](./operating_system/)
     1. [External Command](./operating_system/src/external_command.rs)
+17. [Science](./science/)
+    1. [Mathematics](./science/src/mathematics/)
+       1. [Linear Algebra](./science/src/mathematics/linear_algebra.rs)
 
 ### References
 
