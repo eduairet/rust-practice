@@ -1,4 +1,4 @@
-use ndarray::{Array1, Array2};
+use ndarray::{Array, Array1, Array2, ArrayBase, Dim, OwnedRepr};
 
 /// Adds two 2D matrices of `usize` values.
 ///
@@ -92,4 +92,52 @@ pub fn multiply_scalar_with_vector_with_matrix(
     let new_matrix = matrix.dot(&new_vector);
 
     (new_vector, new_matrix)
+}
+
+/// Compares two vectors of `f64` values.
+///
+/// # Arguments
+///
+/// * `vector_a` - A vector of `f64` values.
+/// * `vector_b` - A vector of `f64` values.
+///
+/// # Returns
+///
+/// A tuple of two vectors of `f64` values.
+///
+/// # Example
+///
+/// ```
+/// use science::vector_comparison;
+///
+/// let a = vec![1., 2., 3., 4., 5.];
+/// let b = vec![5., 4., 3., 2., 1.];
+/// let mut c = vec![1., 2., 3., 4., 5.];
+/// let mut d = vec![5., 4., 3., 2., 1.];
+///
+/// let (z, w) = vector_comparison(&a, &b, &mut c, &mut d);
+///
+/// let expected_z = ndarray::Array::from_vec(vec![6., 6., 6., 6., 6.]);
+/// let expected_w = ndarray::Array::from_vec(vec![6., 6., 6., 6., 6.]);
+///
+/// assert_eq!(z, expected_z);
+/// assert_eq!(w, expected_w);
+/// ```
+pub fn vector_comparison(
+    vector_a: &Vec<f64>,
+    vector_b: &Vec<f64>,
+    vector_c: &mut Vec<f64>,
+    vector_d: &mut Vec<f64>,
+) -> (
+    ArrayBase<OwnedRepr<f64>, Dim<[usize; 1]>>,
+    ArrayBase<OwnedRepr<f64>, Dim<[usize; 1]>>,
+) {
+    let a = Array::from_vec(vector_a.clone());
+    let b = Array::from_vec(vector_b.clone());
+    let c = Array::from_vec(vector_c.clone());
+    let d = Array::from_vec(vector_d.clone());
+    let z = a + b;
+    let w = c + d;
+
+    (z, w)
 }
