@@ -1,3 +1,4 @@
+use nalgebra::{ArrayStorage, Const, Matrix};
 use ndarray::{Array, Array1, Array2, ArrayBase, ArrayView1, Dim, OwnedRepr};
 
 /// Adds two 2D matrices of `usize` values.
@@ -224,4 +225,38 @@ pub fn normalize(mut x: Array1<f64>) -> Array1<f64> {
     let norm = l2_norm(x.view());
     x.mapv_inplace(|e| e / norm);
     x
+}
+
+/// Inverts a 3x3 matrix of `f64` values.
+///
+/// # Arguments
+///
+/// * `matrix` - A 3x3 matrix of `f64` values.
+///
+/// # Returns
+///
+/// An `Option` of a 3x3 matrix of `f64` values.
+///
+/// # Example
+///
+/// ```
+/// use nalgebra::Matrix3;
+/// use science::invert_matrix;
+///
+/// let matrix = Matrix3::new(1., 2., 3., 0., 1., 4., 5., 6., 0.);
+///
+/// let inv = invert_matrix(matrix);
+///
+/// assert_eq!(
+///    inv.unwrap(),
+///    Matrix3::new(-24., 18., 5., 20., -15., -4., -5., 4., 1.)
+/// );
+/// ```
+pub fn invert_matrix(
+    matrix: Matrix<f64, Const<3>, Const<3>, ArrayStorage<f64, 3, 3>>,
+) -> Option<Matrix<f64, Const<3>, Const<3>, ArrayStorage<f64, 3, 3>>> {
+    match matrix.try_inverse() {
+        Some(inv) => Some(inv),
+        None => None,
+    }
 }

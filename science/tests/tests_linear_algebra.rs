@@ -1,8 +1,10 @@
 use approx::assert_abs_diff_eq;
+use nalgebra::Matrix3;
 use ndarray::{arr1, arr2, array, Array, ArrayBase, Dim, OwnedRepr};
 use science::{
-    adding_2d_usize_matrices, l1_norm, l2_norm, multiply_scalar_with_vector_with_matrix,
-    multiplying_2d_usize_matrices, normalize, vector_comparison,
+    adding_2d_usize_matrices, invert_matrix, l1_norm, l2_norm,
+    multiply_scalar_with_vector_with_matrix, multiplying_2d_usize_matrices, normalize,
+    vector_comparison,
 };
 
 #[cfg(test)]
@@ -94,5 +96,16 @@ mod tests_linear_algebra {
                 0.674199862463242
             ]
         );
+    }
+
+    #[test]
+    fn test_invert_matrix() {
+        let matrix = Matrix3::new(2.0, 1.0, 1.0, 3.0, 2.0, 1.0, 2.0, 1.0, 2.0);
+        println!("matrix = {}", matrix);
+        let inverted_matrix = invert_matrix(matrix);
+        println!("inverted_matrix = {}", inverted_matrix.unwrap());
+        let expected_inverted_matrix =
+            Matrix3::new(3.0, -1.0, -1.0, -4.0, 2.0, 1.0, -1.0, 0.0, 1.0);
+        assert_eq!(inverted_matrix.unwrap(), expected_inverted_matrix);
     }
 }
