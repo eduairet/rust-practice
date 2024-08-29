@@ -1,5 +1,6 @@
-use nalgebra::{ArrayStorage, Const, Matrix};
+use nalgebra::{ArrayStorage, Const, DMatrix, Matrix};
 use ndarray::{Array, Array1, Array2, ArrayBase, ArrayView1, Dim, OwnedRepr};
+use serde_json;
 
 /// Adds two 2D matrices of `usize` values.
 ///
@@ -259,4 +260,58 @@ pub fn invert_matrix(
         Some(inv) => Some(inv),
         None => None,
     }
+}
+
+/// Serializes a 2D matrix of `i32` values to a JSON string.
+///
+/// # Arguments
+///
+/// * `matrix` - A 2D matrix of `i32` values.
+///
+/// # Returns
+///
+/// A `String`.
+///
+/// # Example
+///
+/// ```
+/// use nalgebra::DMatrix;
+///
+/// let row_slice: Vec<i32> = (1..7).collect();
+/// let matrix = DMatrix::from_row_slice(2, 3, &row_slice);
+/// let serialized_matrix = science::serialize_matrix(matrix);
+///
+/// assert_eq!(serialized_matrix, "[[1,4,2,5,3,6],2,3]");
+/// ```
+pub fn serialize_matrix(matrix: DMatrix<i32>) -> String {
+    let serialized_matrix = serde_json::to_string(&matrix).unwrap();
+    serialized_matrix
+}
+
+/// Deserializes a JSON string to a 2D matrix of `i32` values.
+///
+/// # Arguments
+///
+/// * `serialized_matrix` - A JSON string.
+///
+/// # Returns
+///
+/// A 2D matrix of `i32` values.
+///
+/// # Example
+///
+/// ```
+/// use nalgebra::DMatrix;
+/// use science::{serialize_matrix, deserialize_matrix};
+///
+/// let row_slice: Vec<i32> = (1..5001).collect();
+/// let matrix = DMatrix::from_row_slice(50, 100, &row_slice);
+/// let serialized_matrix = serialize_matrix(matrix.clone());
+/// let deserialized_matrix = deserialize_matrix(&serialized_matrix);
+///
+/// assert_eq!(matrix, deserialized_matrix);
+/// ```
+pub fn deserialize_matrix(serialized_matrix: &str) -> DMatrix<i32> {
+    let deserialized_matrix: DMatrix<i32> = serde_json::from_str(&serialized_matrix).unwrap();
+    deserialized_matrix
 }

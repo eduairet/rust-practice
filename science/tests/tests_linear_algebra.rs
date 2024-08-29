@@ -1,10 +1,10 @@
 use approx::assert_abs_diff_eq;
-use nalgebra::Matrix3;
+use nalgebra::{DMatrix, Matrix3};
 use ndarray::{arr1, arr2, array, Array, ArrayBase, Dim, OwnedRepr};
 use science::{
-    adding_2d_usize_matrices, invert_matrix, l1_norm, l2_norm,
+    adding_2d_usize_matrices, deserialize_matrix, invert_matrix, l1_norm, l2_norm,
     multiply_scalar_with_vector_with_matrix, multiplying_2d_usize_matrices, normalize,
-    vector_comparison,
+    serialize_matrix, vector_comparison,
 };
 
 #[cfg(test)]
@@ -107,5 +107,20 @@ mod tests_linear_algebra {
         let expected_inverted_matrix =
             Matrix3::new(3.0, -1.0, -1.0, -4.0, 2.0, 1.0, -1.0, 0.0, 1.0);
         assert_eq!(inverted_matrix.unwrap(), expected_inverted_matrix);
+    }
+
+    #[test]
+    fn test_de_serialize_matrix() {
+        let row_slice: Vec<i32> = (1..11).collect();
+        let matrix = DMatrix::from_row_slice(2, 5, &row_slice);
+        let expected_serialized_matrix = "[[1,6,2,7,3,8,4,9,5,10],2,5]";
+
+        let serialized_matrix = serialize_matrix(matrix.clone());
+        println!("serialized_matrix = {:?}", serialized_matrix);
+        assert_eq!(serialized_matrix, expected_serialized_matrix);
+
+        let deserialized_matrix = deserialize_matrix(&serialized_matrix);
+        println!("deserialized_matrix = {:?}", deserialized_matrix);
+        assert_eq!(matrix, deserialized_matrix);
     }
 }
