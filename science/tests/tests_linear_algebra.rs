@@ -1,8 +1,8 @@
 use approx::assert_abs_diff_eq;
-use ndarray::{arr1, arr2, Array, ArrayBase, Dim, OwnedRepr};
+use ndarray::{arr1, arr2, array, Array, ArrayBase, Dim, OwnedRepr};
 use science::{
-    adding_2d_usize_matrices, multiply_scalar_with_vector_with_matrix,
-    multiplying_2d_usize_matrices, vector_comparison,
+    adding_2d_usize_matrices, l1_norm, l2_norm, multiply_scalar_with_vector_with_matrix,
+    multiplying_2d_usize_matrices, normalize, vector_comparison,
 };
 
 #[cfg(test)]
@@ -69,5 +69,30 @@ mod tests_linear_algebra {
 
         assert_abs_diff_eq!(z.as_slice().unwrap(), expected_z.as_slice().unwrap());
         assert_abs_diff_eq!(w.as_slice().unwrap(), expected_w.as_slice().unwrap());
+    }
+
+    #[test]
+    fn test_vec_nom() {
+        let x = array![1., 2., 3., 4., 5.];
+
+        let x_l1 = l1_norm(x.view());
+        let x_l2 = l2_norm(x.view());
+        let x_norm = normalize(x);
+
+        println!("||x||_2 = {}", x_l1);
+        assert_eq!(x_l1, 15.0);
+        println!("||x||_1 = {}", x_l2);
+        assert_eq!(x_l2, 7.416198487095663);
+        println!("Normalizing x yields {:?}", x_norm);
+        assert_eq!(
+            x_norm,
+            array![
+                0.13483997249264842,
+                0.26967994498529685,
+                0.40451991747794525,
+                0.5393598899705937,
+                0.674199862463242
+            ]
+        );
     }
 }

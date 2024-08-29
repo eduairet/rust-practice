@@ -1,4 +1,4 @@
-use ndarray::{Array, Array1, Array2, ArrayBase, Dim, OwnedRepr};
+use ndarray::{Array, Array1, Array2, ArrayBase, ArrayView1, Dim, OwnedRepr};
 
 /// Adds two 2D matrices of `usize` values.
 ///
@@ -140,4 +140,88 @@ pub fn vector_comparison(
     let w = c + d;
 
     (z, w)
+}
+
+/// Computes the L1 norm of a 1D vector of `f64` values.
+///
+/// # Arguments
+///
+/// * `x` - A 1D vector of `f64` values.
+///
+/// # Returns
+///
+/// A `f64` value.
+///
+/// # Example
+///
+/// ```
+/// use science::l1_norm;
+///
+/// let x = ndarray::array![1., 2., 3., 4., 5.];
+///
+/// let x_l1 = l1_norm(x.view());
+///
+/// assert_eq!(x_l1, 15.0);
+/// ```
+pub fn l1_norm(x: ArrayView1<f64>) -> f64 {
+    x.fold(0., |acc, elem| acc + elem.abs())
+}
+
+/// Computes the L2 norm of a 1D vector of `f64` values.
+///
+/// # Arguments
+///
+/// * `x` - A 1D vector of `f64` values.
+///
+/// # Returns
+///
+/// A `f64` value.
+///
+/// # Example
+///
+/// ```
+/// use science::l2_norm;
+///
+/// let x = ndarray::array![1., 2., 3., 4., 5.];
+///
+/// let x_l2 = l2_norm(x.view());
+///
+/// assert_eq!(x_l2, 7.416198487095663);
+/// ```
+pub fn l2_norm(x: ArrayView1<f64>) -> f64 {
+    x.dot(&x).sqrt()
+}
+
+/// Normalizes a 1D vector of `f64` values.
+///
+/// # Arguments
+///
+/// * `x` - A 1D vector of `f64` values.
+///
+/// # Returns
+///
+/// A 1D vector of `f64` values.
+///
+/// # Example
+///
+/// ```
+/// use science::normalize;
+///
+/// let x = ndarray::array![1., 2., 3., 4., 5.];
+///
+/// let x_norm = normalize(x);
+///
+/// assert_eq!(
+///    x_norm,
+///   ndarray::array![
+///      0.13483997249264842,
+///      0.26967994498529685,
+///      0.40451991747794525,
+///      0.5393598899705937,
+///      0.674199862463242
+///   ]);
+pub fn normalize(mut x: Array1<f64>) -> Array1<f64> {
+    let norm = l2_norm(x.view());
+    x.mapv_inplace(|e| e / norm);
+    x
 }
