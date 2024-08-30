@@ -46,6 +46,7 @@ Rust exercises by Eduardo Aire Torres.
 17. [Science](./science/)
     1. [Mathematics](./science/src/mathematics/)
        1. [Linear Algebra](./science/src/mathematics/linear_algebra.rs)
+       2. [Trigonometry](./science/src/mathematics/trigonometry.rs)
 
 ### References
 
