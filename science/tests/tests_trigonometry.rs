@@ -1,4 +1,6 @@
-use science::{calculate_hypotenuse, is_tan_equal_to_sin_divided_by_cos};
+use science::{
+    calculate_hypotenuse, distance_between_two_points_on_earth, is_tan_equal_to_sin_divided_by_cos,
+};
 
 #[cfg(test)]
 mod tests_trigonometry {
@@ -19,5 +21,14 @@ mod tests_trigonometry {
         let result = is_tan_equal_to_sin_divided_by_cos(angle);
         print!("Result: {}", result);
         assert!(result);
+    }
+
+    #[test]
+    fn test_distance_between_two_points_on_earth() {
+        let point_a = (48.85341_f64, -2.34880_f64);
+        let point_b = (51.50853_f64, -0.12574_f64);
+        let distance = distance_between_two_points_on_earth(point_a, point_b);
+        print!("Distance: {}", distance);
+        assert_eq!(distance, 334.95585243753624);
     }
 }
