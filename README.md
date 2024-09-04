@@ -48,6 +48,7 @@ Rust exercises by Eduardo Aire Torres.
        1. [Linear Algebra](./science/src/mathematics/linear_algebra.rs)
        2. [Trigonometry](./science/src/mathematics/trigonometry.rs)
        3. [Complex Numbers](./science/src/mathematics/complex_numbers.rs)
+       4. [Statistics](./science/src/mathematics/statistics.rs)
 
 ### References
 
