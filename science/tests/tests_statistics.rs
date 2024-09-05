@@ -1,4 +1,4 @@
-use science::calculate_mean;
+use science::{calculate_mean, calculate_median};
 
 #[cfg(test)]
 mod tests_statistics {
@@ -11,5 +11,13 @@ mod tests_statistics {
         let mean = calculate_mean(&data);
         print!("mean: {:?}", mean);
         assert_eq!(mean, Some(3.0));
+    }
+
+    #[test]
+    fn test_calculate_median() {
+        let data = vec![1, 2, 3, 4, 5];
+        let median = calculate_median(&data);
+        print!("median: {:?}", median);
+        assert_eq!(median, Some(3.0));
     }
 }
