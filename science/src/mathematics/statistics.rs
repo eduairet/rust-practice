@@ -1,4 +1,4 @@
-use std::cmp::Ordering;
+use std::{cmp::Ordering, collections::HashMap};
 
 /// Calculate the mean of a dataset
 ///
@@ -145,4 +145,37 @@ pub fn calculate_median(data: &[i32]) -> Option<f32> {
         }
         odd => select(data, odd / 2).map(|x| x as f32),
     }
+}
+
+/// Calculate the mode of a dataset
+///
+/// # Arguments
+///
+/// * `data` - A slice of i32 values
+///
+/// # Returns
+///
+/// * `Option<i32>` - The mode of the dataset
+///
+/// # Example
+///
+/// ```
+/// use science::calculate_mode;
+///
+/// let data = vec![1, 2, 3, 4, 5, 5];
+/// let mode = calculate_mode(&data);
+/// assert_eq!(mode, Some(5));
+/// ```
+pub fn calculate_mode(data: &[i32]) -> Option<i32> {
+    let frequencies = data.iter().fold(HashMap::new(), |mut freqs, value| {
+        *freqs.entry(value).or_insert(0) += 1;
+        freqs
+    });
+
+    let mode = frequencies
+        .into_iter()
+        .max_by_key(|&(_, count)| count)
+        .map(|(value, _)| *value);
+
+    mode
 }
