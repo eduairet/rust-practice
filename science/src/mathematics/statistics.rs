@@ -179,3 +179,70 @@ pub fn calculate_mode(data: &[i32]) -> Option<i32> {
 
     mode
 }
+
+/// Calculate the mean of a dataset
+///
+/// # Arguments
+///
+/// * `data` - A slice of i32 values
+///
+/// # Returns
+///
+/// * `Option<f32>` - The mean of the dataset
+///
+/// # Example
+///
+/// ```
+/// use science::calculate_mean_i32;
+///
+/// let data = vec![1, 2, 3, 4, 5];
+/// let mean = calculate_mean_i32(&data);
+/// assert_eq!(mean, Some(3.0));
+/// ```
+pub fn calculate_mean_i32(data: &[i32]) -> Option<f32> {
+    let sum = data.iter().sum::<i32>() as f32;
+    let count = data.len();
+
+    match count {
+        positive if positive > 0 => Some(sum / count as f32),
+        _ => None,
+    }
+}
+
+/// Calculate the standard deviation of a dataset
+///
+/// # Arguments
+///
+/// * `data` - A slice of i32 values
+///
+/// # Returns
+///
+/// * `Option<f32>` - The standard deviation of the dataset
+///
+/// # Example
+///
+/// ```
+/// use science::calculate_standard_deviation;
+///
+/// let data = [12, 15, 15, 7, 3, 3, 1, 1, 1, 10];
+/// let std_deviation = calculate_standard_deviation(&data);
+/// assert_eq!(std_deviation, Some(5.491812));
+/// ```
+pub fn calculate_standard_deviation(data: &[i32]) -> Option<f32> {
+    match (calculate_mean_i32(data), data.len()) {
+        (Some(data_mean), count) if count > 0 => {
+            let variance = data
+                .iter()
+                .map(|value| {
+                    let diff = data_mean - (*value as f32);
+
+                    diff * diff
+                })
+                .sum::<f32>()
+                / count as f32;
+
+            Some(variance.sqrt())
+        }
+        _ => None,
+    }
+}
