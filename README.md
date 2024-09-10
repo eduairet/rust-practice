@@ -50,6 +50,8 @@ Rust exercises by Eduardo Aire Torres.
        3. [Complex Numbers](./science/src/mathematics/complex_numbers.rs)
        4. [Statistics](./science/src/mathematics/statistics.rs)
        5. [Miscellaneous](./science/src/mathematics/miscellaneous.rs)
+18. [Text Processing](./text_processing/)
+    1. [Regular Expressions](./text_processing/src/regular_expressions.rs)
 
 ### References
 
