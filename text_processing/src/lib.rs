@@ -1,2 +1,2 @@
-pub mod regular_expressions;
-pub use regular_expressions::*;
+pub mod reg_exps;
+pub use reg_exps::*;
