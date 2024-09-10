@@ -12,6 +12,17 @@ lazy_static! {
     .unwrap();
 }
 
+/// Extracts login from an email address.
+///
+/// # Examples
+///
+/// ```
+/// use text_processing::extract_login_from_email;
+///
+/// let email = "abcd1234@test.xyz";
+/// let login = extract_login_from_email(email).unwrap();
+/// assert_eq!(login, "abcd1234");
+/// ```
 pub fn extract_login_from_email(email: &str) -> Option<&str> {
     EMAIL_REGEX
         .captures(email)

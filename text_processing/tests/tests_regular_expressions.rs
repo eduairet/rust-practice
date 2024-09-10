@@ -2,6 +2,7 @@ use text_processing::extract_login_from_email;
 
 #[cfg(test)]
 mod tests_regular_expressions {
+
     use super::*;
 
     #[test]
