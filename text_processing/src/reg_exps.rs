@@ -1,5 +1,6 @@
 use lazy_static::lazy_static;
 use regex::Regex;
+use shared::PhoneNumber;
 
 lazy_static! {
     static ref EMAIL_REGEX: Regex = Regex::new(
@@ -11,6 +12,17 @@ lazy_static! {
     )
     .unwrap();
     static ref HASHTAG_REGEX: Regex = Regex::new(r"\#[a-zA-Z][0-9a-zA-Z_]*").unwrap();
+    static ref USA_PHONE_NUMBER_REGEX: Regex = Regex::new(
+        r#"(?x)
+          (?:\+?1)?                       # Country Code Optional
+          [\s\.]?
+          (([2-9]\d{2})|\(([2-9]\d{2})\)) # Area Code
+          [\s\.\-]?
+          ([2-9]\d{2})                    # Exchange Code
+          [\s\.\-]?
+          (\d{4})                         # Subscriber Number"#,
+    )
+    .unwrap();
 }
 
 /// Extracts login from an email address.
@@ -61,5 +73,51 @@ pub fn extract_hashtags(text: &str) -> Vec<&str> {
     HASHTAG_REGEX
         .find_iter(text)
         .map(|mat| mat.as_str())
+        .collect()
+}
+
+/// Extracts phone numbers from a text.
+///
+/// # Arguments
+///
+/// * `text` - A text containing phone numbers.
+///
+/// # Returns
+///
+/// A vector of phone numbers.
+///
+/// # Examples
+///
+/// ```
+/// use text_processing::extract_phone_numbers;
+///
+/// let text = "Some numbers:
+/// +1 (505) 881-9292,
+/// 1.800.233.2010,";
+///
+/// let phone_numbers = extract_phone_numbers(text)
+///    .into_iter()
+///    .map(|m| m.to_string())
+///    .collect::<Vec<_>>();
+///
+/// assert_eq!(
+///    phone_numbers,
+///    vec!["(505) 881-9292", "(800) 233-2010"]
+/// );
+/// ```
+pub fn extract_phone_numbers(text: &str) -> Vec<PhoneNumber> {
+    USA_PHONE_NUMBER_REGEX
+        .captures_iter(text)
+        .filter_map(|cap| {
+            let groups = (cap.get(2).or(cap.get(3)), cap.get(4), cap.get(5));
+            match groups {
+                (Some(area), Some(ext), Some(sub)) => Some(PhoneNumber {
+                    area: area.as_str(),
+                    exchange: ext.as_str(),
+                    subscriber: sub.as_str(),
+                }),
+                _ => None,
+            }
+        })
         .collect()
 }

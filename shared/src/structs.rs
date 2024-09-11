@@ -3,6 +3,7 @@ use rand::{
     distributions::{Distribution, Standard},
     Rng,
 };
+use std::fmt;
 
 /// Point struct
 ///
@@ -124,4 +125,15 @@ pub struct Cat {
 pub struct Commit {
     pub hash: String,
     pub message: String,
+}
+
+pub struct PhoneNumber<'a> {
+    pub area: &'a str,
+    pub exchange: &'a str,
+    pub subscriber: &'a str,
+}
+impl<'a> fmt::Display for PhoneNumber<'a> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "({}) {}-{}", self.area, self.exchange, self.subscriber)
+    }
 }
