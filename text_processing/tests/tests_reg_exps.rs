@@ -1,4 +1,6 @@
-use text_processing::{extract_hashtags, extract_login_from_email, extract_phone_numbers};
+use text_processing::{
+    extract_hashtags, extract_login_from_email, extract_phone_numbers, match_several_regexps,
+};
 
 #[cfg(test)]
 mod tests_reg_exps {
@@ -46,6 +48,21 @@ mod tests_reg_exps {
                 "(202) 991-9534",
                 "(555) 392-0011",
                 "(800) 233-2010"
+            ]
+        );
+    }
+
+    #[test]
+    fn test_match_several_regexps() {
+        let regexps = vec![r#"<[^>]*>"#, r#"</[^>]*>"#];
+        let text = "Regular paragraph\n<div>text</div><p>text</p><span>text</span>\nMixed paragraph <div>text</div>";
+        let matches = match_several_regexps(regexps, text);
+        println!("matches: {:?}", &matches);
+        assert_eq!(
+            matches,
+            vec![
+                "<div>text</div><p>text</p><span>text</span>",
+                "Mixed paragraph <div>text</div>"
             ]
         );
     }

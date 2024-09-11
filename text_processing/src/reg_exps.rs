@@ -1,5 +1,5 @@
 use lazy_static::lazy_static;
-use regex::Regex;
+use regex::{Regex, RegexSetBuilder};
 use shared::PhoneNumber;
 
 lazy_static! {
@@ -120,4 +120,35 @@ pub fn extract_phone_numbers(text: &str) -> Vec<PhoneNumber> {
             }
         })
         .collect()
+}
+
+/// Matches several regexps in a text.
+///
+/// # Arguments
+///
+/// * `regexps` - A vector of regexps.
+///
+/// * `text` - A text to search.
+///
+/// # Returns
+///
+/// A vector of matched strings.
+///
+/// # Examples
+///
+/// ```
+/// use text_processing::match_several_regexps;
+///
+/// let regexps = vec![r#"<[^>]*>"#, r#"</[^>]*>"#];
+/// let text = "Regular paragraph\n<div>text</div><p>text</p><span>text</span>";
+/// let matches = match_several_regexps(regexps, text);
+/// assert_eq!(matches, vec!["<div>text</div><p>text</p><span>text</span>"]);
+/// ```
+pub fn match_several_regexps<'a>(regexps: Vec<&'a str>, text: &'a str) -> Vec<&'a str> {
+    let set = RegexSetBuilder::new(&regexps)
+        .case_insensitive(true)
+        .build()
+        .unwrap();
+
+    text.lines().filter(|line| set.is_match(line)).collect()
 }
