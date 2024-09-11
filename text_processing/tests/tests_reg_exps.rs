@@ -1,5 +1,6 @@
 use text_processing::{
     extract_hashtags, extract_login_from_email, extract_phone_numbers, match_several_regexps,
+    replace_patterns,
 };
 
 #[cfg(test)]
@@ -65,5 +66,15 @@ mod tests_reg_exps {
                 "Mixed paragraph <div>text</div>"
             ]
         );
+    }
+
+    #[test]
+    fn test_replace_patterns() {
+        let pattern_before = r#"<div[^>]*>([^<]*)</div>"#;
+        let pattern_after = r#"<section>$1</section>"#;
+        let text = "<div>text</div>";
+        let replaced_text = replace_patterns(pattern_before, pattern_after, text);
+        println!("replaced_text: {}", &replaced_text);
+        assert_eq!(replaced_text, "<section>text</section>");
     }
 }

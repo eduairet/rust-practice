@@ -1,6 +1,7 @@
 use lazy_static::lazy_static;
 use regex::{Regex, RegexSetBuilder};
 use shared::PhoneNumber;
+use std::borrow::Cow;
 
 lazy_static! {
     static ref EMAIL_REGEX: Regex = Regex::new(
@@ -151,4 +152,37 @@ pub fn match_several_regexps<'a>(regexps: Vec<&'a str>, text: &'a str) -> Vec<&'
         .unwrap();
 
     text.lines().filter(|line| set.is_match(line)).collect()
+}
+
+/// Replaces all occurrences of a pattern in a text.
+///
+/// # Arguments
+///
+/// * `pattern_before` - A pattern to search.
+/// * `pattern_after` - A pattern to replace.
+/// * `text` - A text to search.
+///
+/// # Returns
+///
+/// A new text with replaced patterns.
+///
+/// # Examples
+///
+/// ```
+/// use text_processing::replace_patterns;
+///
+/// let pattern_before = r#"<a href="([^"]*)">"#;
+/// let pattern_after = r#"<a href="$1" target="_blank">"#;
+///
+/// let text = "<a href=\"https://example.com\">Example</a>";
+/// let replaced_text = replace_patterns(pattern_before, pattern_after, text);
+/// assert_eq!(replaced_text, r#"<a href="https://example.com" target="_blank">Example</a>"#);
+/// ```
+pub fn replace_patterns<'a>(
+    pattern_before: &'a str,
+    pattern_after: &'a str,
+    text: &'a str,
+) -> Cow<'a, str> {
+    let re = Regex::new(pattern_before).unwrap();
+    re.replace_all(text, pattern_after)
 }
