@@ -51,7 +51,8 @@ Rust exercises by Eduardo Aire Torres.
        4. [Statistics](./science/src/mathematics/statistics.rs)
        5. [Miscellaneous](./science/src/mathematics/miscellaneous.rs)
 18. [Text Processing](./text_processing/)
-    1. [Regular Expressions](./text_processing/src/regular_expressions.rs)
+    1. [Regular Expressions](./text_processing/src/reg_exps.rs)
+    2. [String Parsing](./text_processing/src/string_parsing.rs)
 
 ### References
 
