@@ -10,7 +10,7 @@ keywords = ["practice"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [workspace]
-members = ["algorithms", "build_time_tooling", "command_line", "compression", "cryptography", "data_structures", "database", "date_time", "development_tools", "encoding", "error_handling", "file_system", "hardware_support", "memory_management", "networking", "operating_system", "science", "shared", "text_processing", "threads"]
+members = ["algorithms", "build_time_tooling", "command_line", "compression", "cryptography", "data_structures", "database", "date_time", "development_tools", "encoding", "error_handling", "file_system", "hardware_support", "memory_management", "networking", "operating_system", "science", "shared", "text_processing", "threads", "web_programming"]
 
 [dependencies]
 algorithms = {path = "algorithms"}
@@ -31,6 +31,7 @@ science = {path = "science"}
 shared = {path = "shared"}
 text_processing = {path = "text_processing"}
 threads = {path = "threads"}
+web_programming = {path = "web_programming"}
 dirs = "5.0.1"
 lazy_static = "1.5.0"
 rand = "0.8.5"

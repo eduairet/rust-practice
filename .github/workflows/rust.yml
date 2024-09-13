@@ -35,3 +35,4 @@ jobs:
           cargo test -p shared --verbose -- --show-output
           cargo test -p text_processing --verbose -- --show-output
           cargo test -p threads --verbose -- --show-output
+          cargo test -p web_programming --verbose -- --show-output

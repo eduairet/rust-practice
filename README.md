@@ -53,6 +53,8 @@ Rust exercises by Eduardo Aire Torres.
 18. [Text Processing](./text_processing/)
     1. [Regular Expressions](./text_processing/src/reg_exps.rs)
     2. [String Parsing](./text_processing/src/string_parsing.rs)
+19. [Web Programming](./web_programming/)
+    1. [Extracting Links](./web_programming/src/extracting_links.rs)
 
 ### References
 
