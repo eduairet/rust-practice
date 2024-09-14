@@ -1,6 +1,8 @@
+use lazy_static::lazy_static;
+use regex::Regex;
 use reqwest::{get, StatusCode};
 use select::{document::Document, predicate::Name};
-use std::collections::HashSet;
+use std::{borrow::Cow, collections::HashSet};
 use url::{Position, Url};
 
 /// Extracts all links from a website.
@@ -141,4 +143,48 @@ pub async fn find_broken_links(endpoint: &str) -> Vec<String> {
     }
 
     broken_links
+}
+
+/// Extracts unique wiki links from a Wikipedia page.
+///
+/// # Arguments
+///
+/// * `wiki_url` - The URL of the Wikipedia page.
+///
+/// # Example
+///
+/// ```
+/// use web_programming::extract_unique_wiki_links;
+///
+/// #[tokio::main]
+/// async fn main() {
+///    let wiki_url = "https://en.wikipedia.org/w/index.php?title=Rust_(programming_language)&action=raw";
+///    let links = extract_unique_wiki_links(wiki_url).await;
+///    assert!(links.len() > 0);
+/// }
+/// ```
+pub async fn extract_unique_wiki_links(wiki_url: &str) -> HashSet<String> {
+    lazy_static! {
+        static ref WIKI_REGEX: Regex = Regex::new(
+            r"(?x)
+                    \[\[(?P<internal>[^\[\]|]*)[^\[\]]*\]\]    # internal links
+                    |
+                    (url=|URL\||\[)(?P<external>http.*?)[ \|}] # external links
+                "
+        )
+        .unwrap();
+    }
+
+    let content = reqwest::get(wiki_url).await.unwrap().text().await.unwrap();
+
+    let links: HashSet<_> = WIKI_REGEX
+        .captures_iter(content.as_str())
+        .map(|c| match (c.name("internal"), c.name("external")) {
+            (Some(val), None) => Cow::from(val.as_str().to_lowercase()).into_owned(),
+            (None, Some(val)) => val.as_str().to_owned(),
+            _ => unreachable!(),
+        })
+        .collect();
+
+    links
 }
