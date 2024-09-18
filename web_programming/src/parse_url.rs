@@ -52,3 +52,26 @@ pub fn get_base_url(mut url: Url) -> Result<Url, Error> {
 
     Ok(url)
 }
+
+/// Creates a URL from a base URL and a path.
+///
+/// # Arguments
+///
+/// * `base_url` - The base URL.
+/// * `path` - The path to append to the base URL.
+///
+/// # Example
+///
+/// ```
+/// use web_programming::create_urls_from_base_url;
+/// use url::Url;
+///
+/// let base_url = "https://www.rust-lang.org/";
+/// let path = "learn";
+/// let result = create_urls_from_base_url(base_url, path);
+/// assert!(result.is_ok());
+/// ```
+pub fn create_urls_from_base_url(base_url: &str, path: &str) -> Result<Url, url::ParseError> {
+    let base = Url::parse(base_url).expect("hardcoded URL is known to be valid");
+    base.join(path)
+}

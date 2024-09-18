@@ -55,7 +55,7 @@ Rust exercises by Eduardo Aire Torres.
     2. [String Parsing](./text_processing/src/string_parsing.rs)
 19. [Web Programming](./web_programming/)
     1. [Extracting Links](./web_programming/src/extracting_links.rs)
-    2. [Uniform Resource Location](./web_programming/src/url.rs)
+    2. [Uniform Resource Location](./web_programming/src/parse_url.rs)
 
 ### References
 
