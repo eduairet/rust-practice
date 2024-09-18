@@ -42,7 +42,7 @@ pub async fn extract_links_from_website(endpoint: &str) -> Vec<String> {
 /// # Example
 ///
 /// ```
-/// use web_programming::get_base_url;
+/// use web_programming::get_base_url_from_link;
 /// use url::Url;
 /// use select::document::Document;
 ///
@@ -51,12 +51,12 @@ pub async fn extract_links_from_website(endpoint: &str) -> Vec<String> {
 ///    let url = Url::parse("https://www.rust-lang.org/").unwrap();
 ///    let response = reqwest::get(url.as_ref()).await.unwrap().text().await.unwrap();
 ///    let document = Document::from(response.as_str());
-///    let base_url = get_base_url(&url, &document).unwrap();
+///    let base_url = get_base_url_from_link(&url, &document).unwrap();
 ///   
 ///    assert_eq!(base_url, Url::parse("https://www.rust-lang.org/").unwrap());
 /// }
 /// ```
-pub fn get_base_url(url: &Url, doc: &Document) -> Result<Url, url::ParseError> {
+pub fn get_base_url_from_link(url: &Url, doc: &Document) -> Result<Url, url::ParseError> {
     let base_tag_href = doc.find(Name("base")).filter_map(|n| n.attr("href")).nth(0);
     let base_url =
         base_tag_href.map_or_else(|| Url::parse(&url[..Position::BeforePath]), Url::parse)?;
@@ -113,7 +113,7 @@ pub async fn find_broken_links(endpoint: &str) -> Vec<String> {
     let url = Url::parse(endpoint).unwrap();
     let response = get(url.as_ref()).await.unwrap().text().await.unwrap();
     let document = Document::from(response.as_str());
-    let base_url = get_base_url(&url, &document).unwrap();
+    let base_url = get_base_url_from_link(&url, &document).unwrap();
     let base_parser = Url::options().base_url(Some(&base_url));
 
     let links: HashSet<Url> = document
