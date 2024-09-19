@@ -1,5 +1,5 @@
 use std::io::{Error, ErrorKind};
-use url::{ParseError, Url};
+use url::{Host, ParseError, Url};
 
 /// Parses a URL from a string.
 ///
@@ -24,21 +24,19 @@ pub fn parse_url_from_string(url: &str) -> Result<Url, ParseError> {
 ///
 /// # Arguments
 ///
-/// * `url` - The URL to get the base URL from.
+/// * `url` - The URL string to get the base URL from.
 ///
 /// # Example
 ///
 /// ```
-/// use url::Url;
 /// use web_programming::get_base_url;
 ///
 /// let full = "https://github.com/rust-lang/cargo?asdf";
-/// let mut url = Url::parse(full).unwrap();
 /// let base = get_base_url(url).unwrap();
-///
 /// assert_eq!(base.as_str(), "https://github.com/");
 /// ```
-pub fn get_base_url(mut url: Url) -> Result<Url, Error> {
+pub fn get_base_url(url: &str) -> Result<Url, Error> {
+    let mut url = Url::parse(url).unwrap();
     match url.path_segments_mut() {
         Ok(mut path) => {
             path.clear();
@@ -71,7 +69,31 @@ pub fn get_base_url(mut url: Url) -> Result<Url, Error> {
 /// let result = create_urls_from_base_url(base_url, path);
 /// assert!(result.is_ok());
 /// ```
-pub fn create_urls_from_base_url(base_url: &str, path: &str) -> Result<Url, url::ParseError> {
+pub fn create_urls_from_base_url(base_url: &str, path: &str) -> Result<Url, ParseError> {
     let base = Url::parse(base_url).expect("hardcoded URL is known to be valid");
     base.join(path)
+}
+
+/// Extracts the URL origin from a URL.
+///
+/// # Arguments
+///
+/// * `url` - The URL to extract the origin from.
+///
+/// # Example
+///
+/// ```
+/// use web_programming::extract_url_origin;
+/// use url::Host;
+///
+/// let url = "https://www.rust-lang.org/learn";
+/// let result = extract_url_origin(url);
+/// assert!(result.is_ok());
+/// ```
+pub fn extract_url_origin(url: &str) -> Result<(String, Host<String>, u16), Error> {
+    let url = Url::parse(url).unwrap();
+    let scheme = url.scheme().to_string();
+    let host = url.host().unwrap().to_string();
+    let port = url.port_or_known_default().unwrap();
+    Ok((scheme, Host::parse(&host).unwrap(), port))
 }
