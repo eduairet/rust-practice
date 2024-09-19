@@ -121,8 +121,23 @@ pub fn extract_url_origin_alt(string_url: &str) -> Result<Origin, ParseError> {
     Ok(result)
 }
 
-pub fn remove_fragment_identifiers_and_query_pairs(url: &str) -> Result<String, ParseError> {
-    let parsed = Url::parse(url).unwrap();
+/// Removes fragment identifiers and query pairs from a URL
+///
+/// /// # Arguments
+///
+/// * `string_url` - The URL to extract the origin from.
+///
+/// # Example
+///
+/// ```
+/// use web_programming::remove_fragment_identifiers_and_query_pairs;
+///
+/// let string_url = "https://www.rust-lang.org/learn?query=string#frag";
+/// let result = remove_fragment_identifiers_and_query_pairs(string_url).unwrap();
+/// assert_eq!(result, "https://www.rust-lang.org/learn");
+/// ```
+pub fn remove_fragment_identifiers_and_query_pairs(string_url: &str) -> Result<String, ParseError> {
+    let parsed = Url::parse(string_url).unwrap();
     let cleaned = parsed[..AfterPath].to_string();
     Ok(cleaned)
 }

@@ -64,8 +64,8 @@ mod tests_url {
 
     #[test]
     fn test_remove_fragment_identifiers_and_query_pairs() {
-        let url = "https://www.rust-lang.org/learn?query=string#frag";
-        let result = remove_fragment_identifiers_and_query_pairs(url).unwrap();
+        let string_url = "https://www.rust-lang.org/learn?query=string#frag";
+        let result = remove_fragment_identifiers_and_query_pairs(string_url).unwrap();
         println!("{:?}", result);
         assert_eq!(result, "https://www.rust-lang.org/learn");
     }
