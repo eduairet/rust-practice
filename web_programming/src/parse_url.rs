@@ -1,5 +1,5 @@
 use std::io::{Error, ErrorKind};
-use url::{Host, Origin, ParseError, Url};
+use url::{Host, Origin, ParseError, Position::AfterPath, Url};
 
 /// Parses a URL from a string.
 ///
@@ -119,4 +119,10 @@ pub fn extract_url_origin_alt(string_url: &str) -> Result<Origin, ParseError> {
     let url = Url::parse(string_url).unwrap();
     let result = url.origin();
     Ok(result)
+}
+
+pub fn remove_fragment_identifiers_and_query_pairs(url: &str) -> Result<String, ParseError> {
+    let parsed = Url::parse(url).unwrap();
+    let cleaned = parsed[..AfterPath].to_string();
+    Ok(cleaned)
 }

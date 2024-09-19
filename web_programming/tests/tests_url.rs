@@ -1,7 +1,7 @@
 use url::{Host, Origin};
 use web_programming::{
     create_urls_from_base_url, extract_url_origin, extract_url_origin_alt, get_base_url,
-    parse_url_from_string,
+    parse_url_from_string, remove_fragment_identifiers_and_query_pairs,
 };
 
 #[cfg(test)]
@@ -58,7 +58,15 @@ mod tests_url {
         let expected = Origin::Tuple(expected_scheme, expected_host, expected_port);
 
         let result = extract_url_origin_alt(string_url).unwrap();
-        print!("{:?}", result);
+        println!("{:?}", result);
         assert_eq!(result, expected);
+    }
+
+    #[test]
+    fn test_remove_fragment_identifiers_and_query_pairs() {
+        let url = "https://www.rust-lang.org/learn?query=string#frag";
+        let result = remove_fragment_identifiers_and_query_pairs(url).unwrap();
+        println!("{:?}", result);
+        assert_eq!(result, "https://www.rust-lang.org/learn");
     }
 }
