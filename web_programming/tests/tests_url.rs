@@ -17,8 +17,8 @@ mod tests_url {
 
     #[test]
     fn test_get_base_url() {
-        let full = "https://github.com/rust-lang/cargo?asdf";
-        let base = get_base_url(full).unwrap();
+        let full_url = "https://github.com/rust-lang/cargo?asdf";
+        let base = get_base_url(full_url).unwrap();
         assert_eq!(base.as_str(), "https://github.com/");
         println!("The base of the URL is: {}", base);
     }

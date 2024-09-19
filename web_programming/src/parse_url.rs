@@ -5,38 +5,38 @@ use url::{Host, ParseError, Url};
 ///
 /// # Arguments
 ///
-/// * `url` - The URL to parse.
+/// * `string_url` - The URL to parse.
 ///
 /// # Example
 ///
 /// ```
 /// use web_programming::parse_url_from_string;
 ///
-/// let url = "https://www.rust-lang.org/";
-/// let result = parse_url_from_string(url);
+/// let string_url = "https://www.rust-lang.org/";
+/// let result = parse_url_from_string(string_url);
 /// assert!(result.is_ok());
 /// ```
-pub fn parse_url_from_string(url: &str) -> Result<Url, ParseError> {
-    Url::parse(url)
+pub fn parse_url_from_string(string_url: &str) -> Result<Url, ParseError> {
+    Url::parse(string_url)
 }
 
 /// Gets the base URL of a URL.
 ///
 /// # Arguments
 ///
-/// * `url` - The URL string to get the base URL from.
+/// * `full_url` - The URL string to get the base URL from.
 ///
 /// # Example
 ///
 /// ```
 /// use web_programming::get_base_url;
 ///
-/// let full = "https://github.com/rust-lang/cargo?asdf";
-/// let base = get_base_url(url).unwrap();
+/// let full_url = "https://github.com/rust-lang/cargo?asdf";
+/// let base = get_base_url(full_url).unwrap();
 /// assert_eq!(base.as_str(), "https://github.com/");
 /// ```
-pub fn get_base_url(url: &str) -> Result<Url, Error> {
-    let mut url = Url::parse(url).unwrap();
+pub fn get_base_url(full_url: &str) -> Result<Url, Error> {
+    let mut url = Url::parse(full_url).unwrap();
     match url.path_segments_mut() {
         Ok(mut path) => {
             path.clear();
@@ -78,7 +78,7 @@ pub fn create_urls_from_base_url(base_url: &str, path: &str) -> Result<Url, Pars
 ///
 /// # Arguments
 ///
-/// * `url` - The URL to extract the origin from.
+/// * `string_url` - The URL to extract the origin from.
 ///
 /// # Example
 ///
@@ -86,12 +86,12 @@ pub fn create_urls_from_base_url(base_url: &str, path: &str) -> Result<Url, Pars
 /// use web_programming::extract_url_origin;
 /// use url::Host;
 ///
-/// let url = "https://www.rust-lang.org/learn";
-/// let result = extract_url_origin(url);
+/// let string_url = "https://www.rust-lang.org/learn";
+/// let result = extract_url_origin(string_url);
 /// assert!(result.is_ok());
 /// ```
-pub fn extract_url_origin(url: &str) -> Result<(String, Host<String>, u16), Error> {
-    let url = Url::parse(url).unwrap();
+pub fn extract_url_origin(string_url: &str) -> Result<(String, Host<String>, u16), Error> {
+    let url = Url::parse(string_url).unwrap();
     let scheme = url.scheme().to_string();
     let host = url.host().unwrap().to_string();
     let port = url.port_or_known_default().unwrap();
