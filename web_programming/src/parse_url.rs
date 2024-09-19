@@ -1,5 +1,5 @@
 use std::io::{Error, ErrorKind};
-use url::{Host, ParseError, Url};
+use url::{Host, Origin, ParseError, Url};
 
 /// Parses a URL from a string.
 ///
@@ -96,4 +96,27 @@ pub fn extract_url_origin(string_url: &str) -> Result<(String, Host<String>, u16
     let host = url.host().unwrap().to_string();
     let port = url.port_or_known_default().unwrap();
     Ok((scheme, Host::parse(&host).unwrap(), port))
+}
+
+/// Extracts the URL origin from a URL.
+///
+///
+/// # Arguments
+///
+/// * `string_url` - The URL to extract the origin from.
+///
+/// # Example
+///
+/// ```
+/// use web_programming::extract_url_origin_alt;
+/// use url::Origin;
+///
+/// let string_url = "ftp://rust-lang.org/examples";
+/// let result = extract_url_origin_alt(string_url);
+/// assert!(result.is_ok());
+/// ```
+pub fn extract_url_origin_alt(string_url: &str) -> Result<Origin, ParseError> {
+    let url = Url::parse(string_url).unwrap();
+    let result = url.origin();
+    Ok(result)
 }

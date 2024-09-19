@@ -1,5 +1,7 @@
+use url::{Host, Origin};
 use web_programming::{
-    create_urls_from_base_url, extract_url_origin, get_base_url, parse_url_from_string,
+    create_urls_from_base_url, extract_url_origin, extract_url_origin_alt, get_base_url,
+    parse_url_from_string,
 };
 
 #[cfg(test)]
@@ -45,5 +47,18 @@ mod tests_url {
             }
             Err(e) => panic!("Error extracting URL origin: {:?}", e),
         }
+    }
+
+    #[test]
+    fn test_extract_url_origin_alt() {
+        let string_url = "ftp://rust-lang.org/examples";
+        let expected_scheme = "ftp".to_owned();
+        let expected_host = Host::Domain("rust-lang.org".to_owned());
+        let expected_port = 21;
+        let expected = Origin::Tuple(expected_scheme, expected_host, expected_port);
+
+        let result = extract_url_origin_alt(string_url).unwrap();
+        print!("{:?}", result);
+        assert_eq!(result, expected);
     }
 }
