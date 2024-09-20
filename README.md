@@ -56,6 +56,7 @@ Rust exercises by Eduardo Aire Torres.
 19. [Web Programming](./web_programming/)
     1. [Extracting Links](./web_programming/src/extracting_links.rs)
     2. [Uniform Resource Location](./web_programming/src/parse_url.rs)
+    3. [Media Types](./web_programming/src/media_types.rs)
 
 ### References
 

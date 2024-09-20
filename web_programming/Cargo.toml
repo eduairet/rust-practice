@@ -5,6 +5,7 @@ edition = "2021"
 
 [dependencies]
 lazy_static = "1.5.0"
+mime = "0.3.17"
 regex = "1.10.6"
 reqwest = "0.12.7"
 select = "0.6.0"
