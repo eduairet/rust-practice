@@ -1,4 +1,6 @@
-use web_programming::{get_mime_type_from_filename, get_mime_type_from_string};
+use web_programming::{
+    get_mime_type_from_filename, get_mime_type_from_string, parse_mime_type_from_http_response,
+};
 
 #[cfg(test)]
 mod tests_media_types {
@@ -42,5 +44,13 @@ mod tests_media_types {
             println!("{} -> {}", filename, mime_type);
             assert_eq!(mime_type.to_string(), expected.to_string());
         }
+    }
+
+    #[tokio::test]
+    async fn test_parse_mime_type_from_http_response() {
+        let endpoint = "https://www.rust-lang.org";
+        let media_type = parse_mime_type_from_http_response(endpoint).await;
+        println!("Media type: {}", media_type);
+        assert_eq!(media_type, "a HTML document".to_string());
     }
 }

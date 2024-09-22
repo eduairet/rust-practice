@@ -1,4 +1,6 @@
 use mime::{Mime, APPLICATION_OCTET_STREAM};
+use reqwest::header::CONTENT_TYPE;
+use std::str::FromStr;
 
 /// Get a `Mime` type from a string.
 ///
@@ -53,4 +55,44 @@ pub fn get_mime_type_from_filename(filename: &str) -> Mime {
         None => mime::TEXT_PLAIN,
     };
     res
+}
+
+/// Parse the MIME type from an HTTP response.
+///
+/// # Arguments
+///
+/// * `endpoint` - A string slice that holds the URL of the endpoint.
+///
+/// # Example
+///
+/// ```
+/// use web_programming::parse_mime_type_from_http_response;
+///
+/// #[tokio::main]
+/// async fn main() {
+///    let endpoint = "https://www.rust-lang.org/logos/rust-logo-32x32.png";
+///    let media_type = parse_mime_type_from_http_response(endpoint).await;
+///    assert_eq!(media_type, "a PNG image".to_string());
+/// }
+pub async fn parse_mime_type_from_http_response(endpoint: &str) -> String {
+    let response = reqwest::get(endpoint).await.unwrap();
+    let headers = response.headers();
+
+    match headers.get(CONTENT_TYPE) {
+        None => {
+            return "The response does not contain a Content-Type header.".to_string();
+        }
+        Some(content_type) => {
+            let content_type = Mime::from_str(content_type.to_str().unwrap()).unwrap();
+            let media_type = match (content_type.type_(), content_type.subtype()) {
+                (mime::TEXT, mime::HTML) => "a HTML document",
+                (mime::TEXT, _) => "a text document",
+                (mime::IMAGE, mime::PNG) => "a PNG image",
+                (mime::IMAGE, _) => "an image",
+                _ => "neither text nor image",
+            };
+
+            return media_type.to_string();
+        }
+    };
 }
