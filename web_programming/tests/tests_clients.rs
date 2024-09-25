@@ -1,4 +1,4 @@
-use web_programming::{make_get_request, make_get_request_async};
+use web_programming::{make_get_request, make_get_request_async, query_github_api};
 
 #[cfg(test)]
 mod tests_clients {
@@ -26,5 +26,18 @@ mod tests_clients {
         assert_eq!(status, 200);
         assert!(headers.contains_key("date"));
         assert!(body.contains("Rust"));
+    }
+
+    #[tokio::test]
+    async fn test_query_github_api() {
+        let owner = "rust-lang-nursery";
+        let repo = "rust-cookbook";
+        let (status, headers, body) = query_github_api(owner, repo).await;
+        println!("status: {}", status);
+        println!("headers: {:?}", headers);
+        println!("body: {:?}", body);
+        assert_eq!(status, 200);
+        assert!(headers.contains_key("date"));
+        assert!(body.len() > 0);
     }
 }

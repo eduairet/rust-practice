@@ -3,11 +3,12 @@ use rand::{
     distributions::{Distribution, Standard},
     Rng,
 };
+use serde::Deserialize;
 use std::fmt;
 
 /// Point struct
 ///
-/// Example:
+/// Example:a
 ///
 /// ```
 /// use shared::Point;
@@ -127,6 +128,21 @@ pub struct Commit {
     pub message: String,
 }
 
+/// PhoneNumber struct
+///
+/// Example:
+///
+/// ```
+/// use shared::PhoneNumber;
+///
+/// let phone_number = PhoneNumber {
+///    area: "415",
+///    exchange: "555",
+///    subscriber: "1234",
+/// };
+///
+/// assert_eq!(phone_number.to_string(), "(415) 555-1234");
+/// ```
 pub struct PhoneNumber<'a> {
     pub area: &'a str,
     pub exchange: &'a str,
@@ -136,4 +152,10 @@ impl<'a> fmt::Display for PhoneNumber<'a> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "({}) {}-{}", self.area, self.exchange, self.subscriber)
     }
+}
+
+#[derive(Deserialize, Debug)]
+pub struct User {
+    pub login: String,
+    pub id: u32,
 }

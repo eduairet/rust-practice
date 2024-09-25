@@ -59,6 +59,7 @@ Rust exercises by Eduardo Aire Torres.
     3. [Media Types](./web_programming/src/media_types.rs)
     4. [Clients](./web_programming/src/clients/)
        1. [Making Requests](./web_programming/src/clients/making_requests.rs)
+       2. [Calling Web API](./web_programming/src/clients/calling_web_api.rs)
 
 ### References
 
