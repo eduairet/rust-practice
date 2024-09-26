@@ -1,4 +1,6 @@
-use web_programming::{make_get_request, make_get_request_async, query_github_api};
+use web_programming::{
+    check_if_api_exists, make_get_request, make_get_request_async, query_github_api,
+};
 
 #[cfg(test)]
 mod tests_clients {
@@ -39,5 +41,15 @@ mod tests_clients {
         assert_eq!(status, 200);
         assert!(headers.contains_key("date"));
         assert!(body.len() > 0);
+    }
+
+    #[tokio::test]
+    async fn test_check_if_api_exists() {
+        let owner = "fonttools";
+        let repo = "fontbakery";
+        let request_url = format!("https://api.github.com/repos/{owner}/{repo}");
+        let exists = check_if_api_exists(&request_url).await;
+        print!("API exists: {}", exists);
+        assert!(exists);
     }
 }
