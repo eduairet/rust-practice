@@ -1,6 +1,9 @@
+use serde_json::json;
+use std::env;
 use web_programming::{
-    check_if_api_exists, make_get_request, make_get_request_async, query_github_api,
+    check_if_api_exists, create_gist, make_get_request, make_get_request_async, query_github_api,
 };
+use dotenv::dotenv;
 
 #[cfg(test)]
 mod tests_clients {
@@ -51,5 +54,30 @@ mod tests_clients {
         let exists = check_if_api_exists(&request_url).await;
         print!("API exists: {}", exists);
         assert!(exists);
+    }
+
+    #[tokio::test]
+    async fn test_create_delete_gist() {
+        dotenv().ok();
+        let gh_user = env::var("GH_USER").unwrap();
+        let gh_pass = env::var("GH_PASS").unwrap();
+        println!("gh_user: {}", gh_user);
+        println!("gh_pass: {}", gh_pass);
+
+        let gist_body = json!({
+        "description": "Hello World Example",
+        "public": true,
+        "files": {
+             "main.py": {
+             "content": r#"print("hello world!")"#
+            }
+        }});
+
+        let gist = create_gist(&gh_user, &gh_pass, gist_body).await;
+        println!("gist: {:?}", gist.html_url);
+        assert_eq!(
+            gist.html_url,
+            format!("https://gist.github.com/{}/{}", gh_user, gist.id) 
+        );
     }
 }

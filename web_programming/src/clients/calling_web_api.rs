@@ -1,5 +1,6 @@
-use reqwest::{header, ClientBuilder, StatusCode};
-use shared::User;
+use reqwest::{header, Client, ClientBuilder, StatusCode};
+use serde_json::Value;
+use shared::{Gist, User};
 use std::time::Duration;
 
 /// Make a GET request to the GitHub API
@@ -78,4 +79,20 @@ pub async fn check_if_api_exists(request_url: &str) -> bool {
         .await
         .unwrap();
     response.status().is_success()
+}
+
+pub async fn create_gist(gh_user: &str, gh_pass: &str, gist_body: Value) -> Gist {
+    let request_url = "https://api.github.com/gists";
+    let response = Client::new()
+        .post(request_url)
+        .header("User-Agent", "Rust Cookbook Client")
+        .basic_auth(gh_user, Some(gh_pass))
+        .json(&gist_body)
+        .send()
+        .await
+        .unwrap();
+
+    let gist: Gist = response.json().await.unwrap();
+
+    gist
 }

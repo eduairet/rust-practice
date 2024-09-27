@@ -159,3 +159,9 @@ pub struct User {
     pub login: String,
     pub id: u32,
 }
+
+#[derive(Deserialize, Debug)]
+pub struct Gist {
+    pub id: String,
+    pub html_url: String,
+}
