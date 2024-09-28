@@ -81,6 +81,44 @@ pub async fn check_if_api_exists(request_url: &str) -> bool {
     response.status().is_success()
 }
 
+/// Create Gist using GitHub API
+///
+/// # Arguments
+///
+/// * `gh_user` - GitHub username
+/// * `gh_pass` - GitHub API token
+/// * `gist_body` - JSON body of the Gist
+///
+/// # Returns
+///
+/// A Gist struct
+///
+/// # Example
+///
+/// ```ignore
+/// use web_programming::create_gist;
+///
+/// #[tokio::main]
+/// async fn main() {
+///    let gh_user = env::var("GH_USER").unwrap();
+///    let gh_pass = env::var("GH_PASS").unwrap();
+///
+///    let gist_body = json!({
+///    "description": "Hello World Example",
+///    "public": true,
+///    "files": {
+///         "main.py": {
+///         "content": r#"print("hello world!")"#
+///        }
+///    }});
+///
+///    let gist = create_gist(&gh_user, &gh_pass, gist_body).await;
+///    assert_eq!(
+///        gist.html_url,
+///        format!("https://gist.github.com/{}/{}", gh_user, gist.id)
+///    );
+/// }
+/// ```
 pub async fn create_gist(gh_user: &str, gh_pass: &str, gist_body: Value) -> Gist {
     let request_url = "https://api.github.com/gists";
     let response = Client::new()
@@ -95,4 +133,43 @@ pub async fn create_gist(gh_user: &str, gh_pass: &str, gist_body: Value) -> Gist
     let gist: Gist = response.json().await.unwrap();
 
     gist
+}
+
+/// Delete Gist using GitHub API
+///
+/// # Arguments
+///
+/// * `gist_id` - The ID of the Gist
+/// * `gh_user` - GitHub username
+/// * `gh_pass` - GitHub API token
+///
+/// # Returns
+///
+/// A status code
+///
+/// # Example
+///
+/// ```ignore
+/// use web_programming::delete_gist;
+///
+/// #[tokio::main]
+/// async fn main() {
+///    let gh_user = env::var("GH_USER").unwrap();
+///    let gh_pass = env::var("GH_PASS").unwrap();
+///
+///    let response_status = delete_gist("gist_id", &gh_user, &gh_pass).await;
+///    assert_eq!(response_status, 204);
+/// }
+/// ```
+pub async fn delete_gist(gist_id: &str, gh_user: &str, gh_pass: &str) -> StatusCode {
+    let request_url = format!("https://api.github.com/gists/{}", gist_id);
+    let response = Client::new()
+        .delete(&request_url)
+        .header("User-Agent", "Rust Cookbook Client")
+        .basic_auth(gh_user, Some(gh_pass))
+        .send()
+        .await
+        .unwrap();
+
+    response.status()
 }

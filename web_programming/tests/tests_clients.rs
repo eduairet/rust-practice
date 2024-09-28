@@ -1,9 +1,10 @@
+use dotenv::dotenv;
 use serde_json::json;
 use std::env;
 use web_programming::{
-    check_if_api_exists, create_gist, make_get_request, make_get_request_async, query_github_api,
+    check_if_api_exists, create_gist, delete_gist, make_get_request, make_get_request_async,
+    query_github_api,
 };
-use dotenv::dotenv;
 
 #[cfg(test)]
 mod tests_clients {
@@ -57,6 +58,7 @@ mod tests_clients {
     }
 
     #[tokio::test]
+    #[ignore]
     async fn test_create_delete_gist() {
         dotenv().ok();
         let gh_user = env::var("GH_USER").unwrap();
@@ -77,7 +79,11 @@ mod tests_clients {
         println!("gist: {:?}", gist.html_url);
         assert_eq!(
             gist.html_url,
-            format!("https://gist.github.com/{}/{}", gh_user, gist.id) 
+            format!("https://gist.github.com/{}/{}", gh_user, gist.id)
         );
+
+        let response_status = delete_gist(&gist.id, &gh_user, &gh_pass).await;
+        println!("Gist {} deleted! Status code: {}", gist.id, response_status);
+        assert_eq!(response_status, 204);
     }
 }
