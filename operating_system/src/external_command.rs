@@ -10,7 +10,7 @@ use std::{error::Error, process::Command};
 ///     
 /// # Returns
 ///
-/// * A Result that holds a string on success, or a Box<dyn Error> on failure
+/// * A Result that holds a string on success or an error on failure
 ///
 /// # Example
 ///

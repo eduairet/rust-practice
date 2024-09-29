@@ -1,6 +1,22 @@
 /// Public API of the library.
 pub use algorithms;
+//pub use build_time_tooling;
 pub use command_line;
 pub use compression;
 pub use cryptography;
+pub use data_structures;
+pub use database;
+pub use date_time;
+pub use development_tools;
+pub use encoding;
+pub use error_handling;
+pub use file_system;
+pub use hardware_support;
+pub use memory_management;
+//pub use networking;
+pub use operating_system;
+pub use science;
 pub use shared;
+pub use text_processing;
+pub use threads;
+pub use web_programming;
