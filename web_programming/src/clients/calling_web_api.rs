@@ -1,6 +1,6 @@
-use reqwest::{header, Client, ClientBuilder, StatusCode};
+use reqwest::{blocking, header, Client, ClientBuilder, Result, StatusCode};
 use serde_json::Value;
-use shared::{Gist, User};
+use shared::{ApiResponse, Dependency, Gist, User};
 use std::time::Duration;
 
 /// Make a GET request to the GitHub API
@@ -172,4 +172,73 @@ pub async fn delete_gist(gist_id: &str, gh_user: &str, gh_pass: &str) -> StatusC
         .unwrap();
 
     response.status()
+}
+
+/// Get the reverse dependencies of a crate
+///
+/// # Example
+///
+/// ```rust
+/// use web_programming::ReverseDependencies;
+///
+/// assert!(ReverseDependencies::of("ring").is_ok());
+/// ```
+pub struct ReverseDependencies {
+    pub crate_id: String,
+    pub dependencies: <Vec<Dependency> as IntoIterator>::IntoIter,
+    pub client: blocking::Client,
+    pub page: u32,
+    pub per_page: u32,
+    pub total: u32,
+}
+
+impl ReverseDependencies {
+    pub fn of(crate_id: &str) -> Result<Self> {
+        Ok(ReverseDependencies {
+            crate_id: crate_id.to_owned(),
+            dependencies: vec![].into_iter(),
+            client: blocking::Client::new(),
+            page: 0,
+            per_page: 100,
+            total: 0,
+        })
+    }
+
+    pub fn try_next(&mut self) -> Result<Option<Dependency>> {
+        if let Some(dep) = self.dependencies.next() {
+            return Ok(Some(dep));
+        }
+
+        if self.page > 0 && self.page * self.per_page >= self.total {
+            return Ok(None);
+        }
+
+        self.page += 1;
+        let url = format!(
+            "https://crates.io/api/v1/crates/{}/reverse_dependencies?page={}&per_page={}",
+            self.crate_id, self.page, self.per_page
+        );
+
+        let response = self
+            .client
+            .get(&url)
+            .header("User-Agent", "Rust Cookbook Client")
+            .send()?
+            .json::<ApiResponse>()?;
+        self.dependencies = response.dependencies.into_iter();
+        self.total = response.meta.total;
+        Ok(self.dependencies.next())
+    }
+}
+
+impl Iterator for ReverseDependencies {
+    type Item = Result<Dependency>;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        match self.try_next() {
+            Ok(Some(dep)) => Some(Ok(dep)),
+            Ok(None) => None,
+            Err(err) => Some(Err(err)),
+        }
+    }
 }

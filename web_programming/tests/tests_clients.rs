@@ -3,7 +3,7 @@ use serde_json::json;
 use std::env;
 use web_programming::{
     check_if_api_exists, create_gist, delete_gist, make_get_request, make_get_request_async,
-    query_github_api,
+    query_github_api, ReverseDependencies,
 };
 
 #[cfg(test)]
@@ -85,5 +85,13 @@ mod tests_clients {
         let response_status = delete_gist(&gist.id, &gh_user, &gh_pass).await;
         println!("Gist {} deleted! Status code: {}", gist.id, response_status);
         assert_eq!(response_status, 204);
+    }
+
+    #[test]
+    fn test_reverse_dependencies() {
+        for dep in ReverseDependencies::of("ring").unwrap() {
+            println!("reverse dependency: {}", dep.unwrap().crate_id);
+        }
+        assert!(ReverseDependencies::of("ring").is_ok());
     }
 }

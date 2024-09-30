@@ -154,14 +154,86 @@ impl<'a> fmt::Display for PhoneNumber<'a> {
     }
 }
 
+/// User struct
+///
+/// Example:
+///
+/// ```
+/// use shared::User;
+///
+/// let user = User { login: "octocat".to_string(), id: 1 };
+/// assert_eq!(user.login, "octocat");
+/// assert_eq!(user.id, 1);
+/// ```
 #[derive(Deserialize, Debug)]
 pub struct User {
     pub login: String,
     pub id: u32,
 }
 
+/// Gist struct
+///
+/// Example:
+///
+/// ```
+/// use shared::Gist;
+///
+/// let gist = Gist { id: "1234567890abcdef".to_string(), html_url: "https://gist.github.com/octocat/1234567890abcdef".to_string() };
+/// assert_eq!(gist.id, "1234567890abcdef");
+/// assert_eq!(gist.html_url, "https://gist.github.com/octocat/1234567890abcdef");
+/// ```
 #[derive(Deserialize, Debug)]
 pub struct Gist {
     pub id: String,
     pub html_url: String,
+}
+
+/// ApiResponse struct
+///
+/// Example:
+///
+/// ```
+/// use shared::{ApiResponse, Dependency, Meta};
+///
+/// let api_response = ApiResponse {
+///    dependencies: vec![Dependency { crate_id: "serde".to_string() }],
+///    meta: Meta { total: 1 },
+/// };
+/// assert_eq!(api_response.dependencies[0].crate_id, "serde");
+/// assert_eq!(api_response.meta.total, 1);
+/// ```
+#[derive(Deserialize)]
+pub struct ApiResponse {
+    pub dependencies: Vec<Dependency>,
+    pub meta: Meta,
+}
+
+/// Dependency struct
+///
+/// Example:
+///
+/// ```
+/// use shared::Dependency;
+///
+/// let dependency = Dependency { crate_id: "serde".to_string() };
+/// assert_eq!(dependency.crate_id, "serde");
+/// ```
+#[derive(Deserialize)]
+pub struct Dependency {
+    pub crate_id: String,
+}
+
+/// Meta struct
+///
+/// Example:
+///
+/// ```
+/// use shared::Meta;
+///
+/// let meta = Meta { total: 1 };
+/// assert_eq!(meta.total, 1);
+/// ```
+#[derive(Deserialize)]
+pub struct Meta {
+    pub total: u32,
 }
