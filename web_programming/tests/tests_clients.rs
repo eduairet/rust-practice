@@ -2,8 +2,8 @@ use dotenv::dotenv;
 use serde_json::json;
 use std::env;
 use web_programming::{
-    check_if_api_exists, create_gist, delete_gist, make_get_request, make_get_request_async,
-    query_github_api, ReverseDependencies,
+    check_if_api_exists, create_gist, delete_gist, download_file_to_temp_directory,
+    make_get_request, make_get_request_async, query_github_api, ReverseDependencies,
 };
 
 #[cfg(test)]
@@ -93,5 +93,19 @@ mod tests_clients {
             println!("reverse dependency: {}", dep.unwrap().crate_id);
         }
         assert!(ReverseDependencies::of("ring").is_ok());
+    }
+
+    #[tokio::test]
+    #[ignore]
+    async fn test_download_file_to_temp_directory() {
+        let dir_name = "test_download";
+        let file_url = "https://www.rust-lang.org/logos/rust-logo-512x512.png";
+        let (dest, bytes) = download_file_to_temp_directory(dir_name, file_url)
+            .await
+            .unwrap();
+        println!("Downloaded file: {:?}", dest);
+        assert!(dest.file_type().is_file());
+        println!("Downloaded {} bytes", bytes);
+        assert!(bytes > 0);
     }
 }
