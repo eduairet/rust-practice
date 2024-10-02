@@ -1,4 +1,5 @@
 use std::fs::{File, Metadata};
+use std::io::Read;
 use std::{error::Error, io::copy};
 use tempfile::Builder;
 
@@ -53,4 +54,38 @@ pub async fn download_file_to_temp_directory(
     let dest_path = dest.metadata().unwrap();
     let content = response.text().await.unwrap();
     Ok((dest_path, copy(&mut content.as_bytes(), &mut dest).unwrap()))
+}
+
+/// Posts a file to paste.rs and returns the response text.
+///
+/// # Arguments
+///
+/// * `message` - A string slice that holds the name of the file to post.
+///
+/// # Returns
+///
+/// A Url that holds the response text.
+///
+/// # Example
+///
+/// ```ignore
+/// use web_programming::clients::downloads::post_file_to_paste_rs;
+///
+/// #[tokio::main]
+/// async fn main() {
+///    let message = "message.txt";
+///    let response_text = post_file_to_paste_rs(message).await.unwrap();
+///    assert!(response_text.contains("https://paste.rs"));
+/// }
+pub async fn post_file_to_paste_rs(message: &str) -> Result<String, Box<dyn Error>> {
+    let paste_api = "https://paste.rs";
+    let mut file = File::open(message).unwrap();
+
+    let mut contents = String::new();
+    file.read_to_string(&mut contents).unwrap();
+
+    let client = reqwest::Client::new();
+    let res = client.post(paste_api).body(contents).send().await.unwrap();
+    let response_text = res.text().await.unwrap();
+    Ok(response_text)
 }
