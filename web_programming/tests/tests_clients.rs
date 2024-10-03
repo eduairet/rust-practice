@@ -3,8 +3,8 @@ use serde_json::json;
 use std::env;
 use web_programming::{
     check_if_api_exists, create_gist, delete_gist, download_file_to_temp_directory,
-    make_get_request, make_get_request_async, post_file_to_paste_rs, query_github_api,
-    ReverseDependencies,
+    make_get_request, make_get_request_async, make_partial_download, post_file_to_paste_rs,
+    query_github_api, ReverseDependencies,
 };
 
 #[cfg(test)]
@@ -117,5 +117,16 @@ mod tests_clients {
         let response_text = post_file_to_paste_rs(message).await.unwrap();
         println!("response_text: {}", response_text);
         assert!(response_text.contains("https://paste.rs"));
+    }
+
+    #[test]
+    #[ignore]
+    fn test_make_partial_download() {
+        let chunk_size = 10240;
+        let duration = 2;
+        let output_file = make_partial_download(chunk_size, duration).unwrap();
+        println!("output_file: {:?}", output_file);
+        assert!(output_file.metadata().unwrap().is_file());
+        assert_eq!(output_file.metadata().unwrap().len(), chunk_size as u64);
     }
 }

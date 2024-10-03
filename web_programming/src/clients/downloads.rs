@@ -1,6 +1,15 @@
-use std::fs::{File, Metadata};
-use std::io::Read;
-use std::{error::Error, io::copy};
+use reqwest::{
+    blocking::Client,
+    header::{CONTENT_LENGTH, RANGE},
+    StatusCode,
+};
+use shared::PartialRangeIter;
+use std::{
+    error::Error,
+    fs::{File, Metadata},
+    io::{copy, Read},
+    str::FromStr,
+};
 use tempfile::Builder;
 
 /// Downloads a file from a given URL and saves it to a temporary directory.
@@ -88,4 +97,62 @@ pub async fn post_file_to_paste_rs(message: &str) -> Result<String, Box<dyn Erro
     let res = client.post(paste_api).body(contents).send().await.unwrap();
     let response_text = res.text().await.unwrap();
     Ok(response_text)
+}
+
+/// Downloads a file in chunks and saves it to the current directory.
+///
+/// # Arguments
+///
+/// * `chunk_size` - A u32 that holds the size of the chunks to download.
+/// * `duration` - A u32 that holds the duration of the download.
+///
+/// # Returns
+///
+/// A File that holds the downloaded file.
+///
+/// # Example
+///
+/// ```ignore
+/// use web_programming::clients::downloads::make_partial_download;
+///
+/// let chunk_size = 10240;
+/// let duration = 2;
+/// let file = make_partial_download(chunk_size, duration).unwrap();
+/// assert!(file.metadata().unwrap().len() > 0);
+/// ```
+pub fn make_partial_download(chunk_size: u32, duration: u32) -> Result<File, Box<dyn Error>> {
+    let url: String = format!(
+        "https://httpbin.org/range/{}?duration={}",
+        chunk_size, duration
+    );
+
+    let client = Client::new();
+    let response = client.head(&url).send().unwrap();
+    let length = response
+        .headers()
+        .get(CONTENT_LENGTH)
+        .ok_or("response doesn't include the content length")
+        .unwrap();
+    let length = u64::from_str(length.to_str().unwrap())
+        .map_err(|_| "invalid Content-Length header")
+        .unwrap();
+
+    let mut output_file = File::create("download.bin").unwrap();
+
+    println!("starting download...");
+    for range in PartialRangeIter::new(0, length - 1, chunk_size / 10).unwrap() {
+        println!("range {:?}", range);
+        let mut response = client.get(&url).header(RANGE, range).send().unwrap();
+
+        let status = response.status();
+        if !(status == StatusCode::OK || status == StatusCode::PARTIAL_CONTENT) {
+            panic!("unexpected status code: {:?}", status);
+        }
+        copy(&mut response, &mut output_file).unwrap();
+    }
+
+    let content = response.text().unwrap();
+    copy(&mut content.as_bytes(), &mut output_file).unwrap();
+
+    Ok(output_file)
 }

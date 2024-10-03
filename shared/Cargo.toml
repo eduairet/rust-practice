@@ -9,5 +9,6 @@ edition = "2021"
 image = "0.25.1"
 num = "0.4.3"
 rand = "0.8.5"
+reqwest = "0.12.8"
 ring = "0.17.8"
 serde = {version = "1.0.210", features = ["derive"]}

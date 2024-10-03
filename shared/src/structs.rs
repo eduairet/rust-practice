@@ -3,8 +3,9 @@ use rand::{
     distributions::{Distribution, Standard},
     Rng,
 };
+use reqwest::header::HeaderValue;
 use serde::Deserialize;
-use std::fmt;
+use std::{error::Error, fmt};
 
 /// Point struct
 ///
@@ -236,4 +237,49 @@ pub struct Dependency {
 #[derive(Deserialize)]
 pub struct Meta {
     pub total: u32,
+}
+
+/// Partial Range Iterator struct
+///
+/// Example:
+///
+/// ```
+/// use shared::PartialRangeIter;
+///
+/// let range = PartialRangeIter { start: 0, end: 10, buffer_size: 2 };
+/// assert_eq!(range.start, 0);
+/// assert_eq!(range.end, 10);
+/// assert_eq!(range.buffer_size, 2);
+/// ```
+pub struct PartialRangeIter {
+    pub start: u64,
+    pub end: u64,
+    pub buffer_size: u32,
+}
+impl PartialRangeIter {
+    pub fn new(start: u64, end: u64, buffer_size: u32) -> Result<Self, Box<dyn Error>> {
+        if buffer_size == 0 {
+            Err("invalid buffer_size, give a value greater than zero.")?;
+        }
+        Ok(PartialRangeIter {
+            start,
+            end,
+            buffer_size,
+        })
+    }
+}
+impl Iterator for PartialRangeIter {
+    type Item = HeaderValue;
+    fn next(&mut self) -> Option<Self::Item> {
+        if self.start > self.end {
+            None
+        } else {
+            let prev_start = self.start;
+            self.start += std::cmp::min(self.buffer_size as u64, self.end - self.start + 1);
+            Some(
+                HeaderValue::from_str(&format!("bytes={}-{}", prev_start, self.start - 1))
+                    .expect("string provided by format!"),
+            )
+        }
+    }
 }
