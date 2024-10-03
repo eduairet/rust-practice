@@ -60,6 +60,8 @@ Rust exercises by Eduardo Aire Torres.
     4. [Clients](./web_programming/src/clients/)
        1. [Making Requests](./web_programming/src/clients/making_requests.rs)
        2. [Calling Web API](./web_programming/src/clients/calling_web_api.rs)
+       3. [Downloads](./web_programming/src/clients/downloads.rs)
+       4. [Authentication](./web_programming/src/clients/authentication.rs)
 
 ### References
 

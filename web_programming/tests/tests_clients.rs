@@ -2,9 +2,9 @@ use dotenv::dotenv;
 use serde_json::json;
 use std::env;
 use web_programming::{
-    check_if_api_exists, create_gist, delete_gist, download_file_to_temp_directory,
-    make_get_request, make_get_request_async, make_partial_download, post_file_to_paste_rs,
-    query_github_api, ReverseDependencies,
+    basic_authentication, check_if_api_exists, create_gist, delete_gist,
+    download_file_to_temp_directory, make_get_request, make_get_request_async,
+    make_partial_download, post_file_to_paste_rs, query_github_api, ReverseDependencies,
 };
 
 #[cfg(test)]
@@ -128,5 +128,14 @@ mod tests_clients {
         println!("output_file: {:?}", output_file);
         assert!(output_file.metadata().unwrap().is_file());
         assert_eq!(output_file.metadata().unwrap().len(), chunk_size as u64);
+    }
+
+    #[test]
+    fn test_basic_authentication() {
+        let user_name = "user";
+        let password = Some("password".to_string());
+        let response = basic_authentication(user_name, password).unwrap();
+        println!("response: {:?}", response);
+        assert!(response.status().is_success());
     }
 }
